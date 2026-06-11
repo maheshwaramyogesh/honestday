@@ -3,1074 +3,1202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HonestDay — Confront Your Procrastination</title>
+<title>HonestDay — Behavioral Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --ink:#080808;--surface:#0d0d0d;--panel:#111;--lift:#1a1a1a;
+  --edge:rgba(255,255,255,0.055);--edge2:rgba(255,255,255,0.1);
+  --white:#f2f2f0;--off:#c8c8c4;--muted:#5a5a56;
+  --red:#c8352a;--red-dim:rgba(200,53,42,0.1);--red-glow:rgba(200,53,42,0.22);
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Inter',system-ui,sans-serif;
+  --page:clamp(24px,5vw,80px);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--ink);color:var(--white);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.16,1,.3,1),height .35s cubic-bezier(.16,1,.3,1),background .3s,border-radius .3s}
+#cur-r{position:fixed;width:38px;height:38px;border:1px solid rgba(200,53,42,.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:opacity .3s}
+#cur.h{width:48px;height:48px;background:transparent;border:1px solid var(--red);border-radius:50%}
+#cur.h ~ #cur-r{opacity:0}
 
-:root {
-  --black: #0d0d0d;
-  --dark: #161616;
-  --card: #1c1c1c;
-  --red: #c0392b;
-  --red-bright: #e74c3c;
-  --red-glow: rgba(192,57,43,0.3);
-  --white: #f0f0f0;
-  --grey: #888;
-  --border: rgba(255,255,255,0.07);
-  --mono: 'Space Mono', monospace;
-  --sans: 'Space Grotesk', sans-serif;
-}
+/* CANVAS BG */
+#cvbg{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-html { scroll-behavior: smooth; }
+/* ═══════════════════════════════════════
+   LOADER — behavioral priming
+═══════════════════════════════════════ */
+#loader{
+  position:fixed;inset:0;background:var(--ink);z-index:10000;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:0;overflow:hidden
+}
+.l-question{
+  font-family:var(--serif);font-size:clamp(1rem,2.2vw,1.5rem);
+  color:var(--muted);letter-spacing:-.01em;
+  margin-bottom:3.5rem;opacity:0;text-align:center;max-width:500px;line-height:1.5
+}
+.l-question em{color:var(--red);font-style:italic}
+.lw{font-family:var(--serif);font-size:clamp(3rem,9vw,8rem);font-weight:400;line-height:.95;letter-spacing:-.03em;overflow:hidden;display:block}
+.lw span{display:block;transform:translateY(110%)}
+.lw.italic span{font-style:italic;color:var(--red)}
+.l-count{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:2.5rem;opacity:0}
+.l-bar{width:260px;height:1px;background:var(--lift);margin:.9rem auto 0;overflow:hidden;opacity:0}
+.l-fill{height:100%;width:0;background:var(--red)}
 
-body {
-  font-family: var(--sans);
-  background: var(--black);
-  color: var(--white);
-  overflow-x: hidden;
-  cursor: none;
-}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem var(--page);display:flex;justify-content:space-between;align-items:center;opacity:0;transition:background .3s,border-color .3s}
+.nlogo{font-family:var(--serif);font-size:1.05rem;font-style:italic;letter-spacing:-.01em}
+.nlogo em{color:var(--red);font-style:normal}
+.nlinks{display:flex;gap:2.5rem;align-items:center}
+.nlinks a{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nlinks a:hover{color:var(--white)}
+.ncta{color:var(--white)!important;border:1px solid var(--edge2);padding:.5rem 1.3rem;border-radius:100px;transition:all .3s!important}
+.ncta:hover{border-color:var(--red)!important;box-shadow:0 0 20px var(--red-glow)}
 
-/* ── CUSTOM CURSOR ── */
-.cursor {
-  position: fixed;
-  width: 12px; height: 12px;
-  background: var(--red);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
-  mix-blend-mode: normal;
-}
-.cursor-ring {
-  position: fixed;
-  width: 40px; height: 40px;
-  border: 1px solid rgba(192,57,43,0.5);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: all 0.15s ease;
-}
-.cursor.hover { width: 20px; height: 20px; background: var(--red-bright); }
-.cursor-ring.hover { width: 60px; height: 60px; border-color: var(--red); }
-
-/* ── BOOT SCREEN ── */
-#boot {
-  position: fixed;
-  inset: 0;
-  background: var(--black);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 3rem;
-}
-.boot-line {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--red);
-  width: 600px;
-  max-width: 100%;
-  opacity: 0;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.boot-line.active { opacity: 1; }
-.boot-line.done { color: #888; }
-#boot-bar {
-  width: 600px;
-  max-width: 100%;
-  height: 2px;
-  background: #222;
-  margin-top: 1.5rem;
-  overflow: hidden;
-}
-#boot-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--red);
-  transition: width 0.1s linear;
-}
-
-/* ── MAIN CONTENT ── */
-#main { opacity: 0; transition: opacity 1s ease; }
-#main.visible { opacity: 1; }
-
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 1.5rem 4rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  background: rgba(13,13,13,0.9);
-  backdrop-filter: blur(20px);
-}
-.nav-logo {
-  font-family: var(--mono);
-  font-size: 1rem;
-  color: var(--white);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.nav-logo span { color: var(--red); }
-.nav-links { display: flex; gap: 2.5rem; align-items: center; }
-.nav-links a {
-  font-size: 0.85rem;
-  color: var(--grey);
-  text-decoration: none;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  font-family: var(--mono);
-}
-.nav-links a:hover { color: var(--white); }
-.nav-cta {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--white) !important;
-  border: 1px solid var(--red) !important;
-  padding: 0.6rem 1.5rem;
-  border-radius: 2px;
-  transition: all 0.3s !important;
-}
-.nav-cta:hover {
-  background: var(--red) !important;
-  color: var(--white) !important;
-  box-shadow: 0 0 20px var(--red-glow) !important;
-}
+/* MAIN */
+#main{opacity:0;position:relative;z-index:1}
 
 /* ── HERO ── */
-.hero {
-  min-height: 100vh;
-  padding: 12rem 4rem 6rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem var(--page) 5rem;position:relative;overflow:hidden}
+.h-eye{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:2.5rem;opacity:0;display:flex;align-items:center;gap:.8rem}
+.h-eye::before{content:'';width:20px;height:1px;background:var(--red)}
+h1.hero-h{font-family:var(--serif);font-size:clamp(3.8rem,9.5vw,10rem);font-weight:400;line-height:.9;letter-spacing:-.035em;max-width:960px}
+h1.hero-h .ln{display:block;overflow:hidden}
+h1.hero-h .ln span{display:block;transform:translateY(108%)}
+h1.hero-h em{font-style:italic;color:var(--red)}
+.h-sub{margin-top:3rem;display:flex;align-items:flex-end;gap:4rem;opacity:0}
+.h-desc{font-size:.97rem;color:var(--off);line-height:1.8;max-width:380px;font-weight:300}
+.h-btns{display:flex;gap:1rem;flex-shrink:0}
+.h-scroll{position:absolute;bottom:2.5rem;left:var(--page);display:flex;align-items:center;gap:1rem;opacity:0}
+.h-scroll-line{width:36px;height:1px;background:var(--muted);position:relative;overflow:hidden}
+.h-scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--red);animation:scan 2s ease-in-out infinite}
+@keyframes scan{to{left:200%}}
+.h-scroll span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.55rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;padding:.85rem 1.8rem;border-radius:100px;cursor:none;transition:all .35s cubic-bezier(.16,1,.3,1);border:none;position:relative;overflow:hidden}
+.btn-red{color:var(--white);background:var(--red)}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 8px 36px var(--red-glow)}
+.btn-ghost{color:var(--muted);background:transparent;border:1px solid var(--edge)}
+.btn-ghost:hover{color:var(--white);border-color:var(--edge2)}
+.btn.lg{font-size:.82rem;padding:1rem 2.2rem}
+
+/* ═══════════════════════════════════════
+   MIRROR MOMENT — live behavioral watch
+═══════════════════════════════════════ */
+#mirror{
+  position:fixed;bottom:2rem;right:2rem;z-index:500;
+  background:rgba(8,8,8,.92);backdrop-filter:blur(20px);
+  border:1px solid var(--edge);border-radius:12px;
+  padding:1.2rem 1.6rem;max-width:300px;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);
+  pointer-events:none
+}
+#mirror.visible{opacity:1;transform:translateY(0)}
+#mirror.alert-pulse{border-color:rgba(200,53,42,.5);box-shadow:0 0 30px rgba(200,53,42,.12)}
+.mirror-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.mirror-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:pulse 2s infinite}
+.mirror-label{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.mirror-msg{font-family:var(--serif);font-size:.95rem;font-style:italic;color:var(--off);line-height:1.55}
+.mirror-msg em{color:var(--white);font-style:normal;font-family:var(--sans);font-size:.82rem;letter-spacing:-.01em}
+.mirror-sub{font-size:.68rem;color:var(--muted);margin-top:.5rem;line-height:1.5}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* SECTION UTILITY */
+.sec-num{font-size:.6rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.eye{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem}
+.eye::before{content:'';width:15px;height:1px;background:var(--red)}
+.contain{max-width:1360px;margin:0 auto;padding:0 var(--page)}
+
+/* ── SCENE 1: CONTRADICTION ── */
+.s-contra{padding:9rem var(--page);border-top:1px solid var(--edge);position:relative}
+.contra-inner{max-width:1360px;margin:0 auto}
+.contra-pair{display:grid;grid-template-columns:1fr auto 1fr;gap:3rem;align-items:center;margin-bottom:6rem}
+.c-old,.c-new{padding:2.5rem 2.5rem 2.8rem;border-radius:8px;position:relative}
+.c-old{border:1px solid var(--edge);background:var(--panel)}
+.c-old::before{content:'Old thinking';position:absolute;top:-.55rem;left:1.4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);background:var(--panel);padding:0 .5rem}
+.c-old-t{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2.4rem);color:var(--muted);line-height:1.2;text-decoration:line-through;text-decoration-color:rgba(90,90,86,.5)}
+.c-arrow{font-size:1.4rem;color:var(--red);opacity:.6;flex-shrink:0}
+.c-new{border:1px solid var(--red);background:var(--red-dim)}
+.c-new::before{content:'The truth';position:absolute;top:-.55rem;left:1.4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);background:var(--ink);padding:0 .5rem}
+.c-new-t{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2.4rem);font-style:italic;color:var(--white);line-height:1.2}
+.contra-stmt{text-align:center;max-width:700px;margin:0 auto}
+.contra-stmt p{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.8rem);color:var(--off);line-height:1.35;font-weight:400}
+.contra-stmt p em{color:var(--red);font-style:italic}
+
+/* ── SCENE 2: PROOF / CLOCK ── */
+.s-proof{padding:9rem var(--page);border-top:1px solid var(--edge)}
+.proof-hdr{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-bottom:6rem;max-width:1360px;margin-left:auto;margin-right:auto}
+.proof-hdr h2{font-family:var(--serif);font-size:clamp(2.2rem,5vw,5rem);font-weight:400;line-height:1;letter-spacing:-.025em}
+.proof-hdr h2 em{font-style:italic;color:var(--red)}
+.proof-hdr p{font-size:.95rem;color:var(--off);line-height:1.85;font-weight:300;padding-top:.5rem}
+.clock-wrap{display:grid;grid-template-columns:360px 1fr;gap:5rem;align-items:center;max-width:1360px;margin:0 auto}
+.clock-box{position:relative;width:360px;height:360px;flex-shrink:0}
+.clock-cv{width:100%;height:100%}
+.clock-ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.clock-pct{font-family:var(--serif);font-size:3.8rem;font-weight:400;line-height:1;letter-spacing:-.04em}
+.clock-pct span{color:var(--red)}
+.clock-lbl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+.stat-list{display:flex;flex-direction:column;gap:1.2rem}
+.stat-row{display:grid;grid-template-columns:1fr 1fr auto;align-items:center;gap:1.5rem;padding:1.4rem 1.8rem;border:1px solid var(--edge);border-radius:6px;background:var(--panel);transition:border-color .3s,background .3s}
+.stat-row:hover{border-color:var(--red);background:var(--red-dim)}
+.stat-lbl{font-size:.84rem;color:var(--off)}
+.stat-lbl small{display:block;font-size:.68rem;color:var(--muted);margin-top:.15rem}
+.stat-bar{height:2px;background:var(--lift);border-radius:1px;overflow:hidden}
+.stat-fill{height:100%;border-radius:1px;width:0;transition:width 1.6s cubic-bezier(.16,1,.3,1)}
+.stat-n{font-family:var(--serif);font-size:1.25rem;font-style:italic;min-width:3rem;text-align:right}
+
+/* ── SCENE 3: SCROLL STORY ── */
+.s-story{position:relative}
+.story-scroll{height:400vh}
+.story-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid var(--edge)}
+.s-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;padding:var(--page)}
+.s-panel-in{text-align:center;max-width:720px}
+.s-tag{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:1.8rem;display:flex;align-items:center;justify-content:center;gap:.8rem}
+.s-tag::before,.s-tag::after{content:'';width:28px;height:1px;background:var(--red)}
+.s-big{font-family:var(--serif);font-size:clamp(2.8rem,7vw,6.5rem);font-weight:400;line-height:.95;letter-spacing:-.025em}
+.s-big em{font-style:italic;color:var(--red)}
+.s-body{margin-top:2rem;font-size:1rem;color:var(--off);line-height:1.82;font-weight:300;max-width:520px;margin-left:auto;margin-right:auto}
+.sprogress{position:fixed;right:2.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.55rem;z-index:50;opacity:0;transition:opacity .4s}
+.sdot{width:4px;height:4px;border-radius:50%;background:var(--muted);transition:background .3s,transform .3s}
+.sdot.on{background:var(--red);transform:scale(1.9)}
+
+/* ═══════════════════════════════════════
+   SCENE 4: PARTICIPATION (replaces How It Works)
+═══════════════════════════════════════ */
+.s-participate{padding:9rem var(--page);border-top:1px solid var(--edge);background:var(--panel)}
+.part-inner{max-width:960px;margin:0 auto}
+.part-hdr{margin-bottom:4rem}
+.part-hdr .eyebrow{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem}
+.part-hdr .eyebrow::before{content:'';width:15px;height:1px;background:var(--red)}
+.part-hdr h2{font-family:var(--serif);font-size:clamp(2.2rem,5vw,4.5rem);font-weight:400;line-height:1;letter-spacing:-.025em}
+.part-hdr h2 em{font-style:italic;color:var(--red)}
+
+/* The task card */
+.task-card{
+  border:1px solid var(--edge);border-radius:12px;overflow:hidden;
+  background:var(--ink);position:relative
+}
+.task-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red) 0%,transparent 60%)}
+.task-hdr{
+  padding:1.2rem 2rem;border-bottom:1px solid var(--edge);
+  display:flex;align-items:center;gap:.9rem
+}
+.task-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:pulse 2s infinite}
+.task-hdr-label{font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.task-date{margin-left:auto;font-size:.63rem;color:var(--muted);background:var(--lift);padding:.22rem .7rem;border-radius:100px;letter-spacing:.05em}
+.task-body{padding:2.5rem 2.5rem 2rem}
+
+/* The task itself */
+.task-name{
+  font-family:var(--serif);font-size:clamp(1.3rem,3vw,2rem);
+  font-style:italic;color:var(--white);margin-bottom:.5rem;line-height:1.2
+}
+.task-meta{font-size:.75rem;color:var(--muted);margin-bottom:2.5rem;letter-spacing:.05em}
+
+/* The question */
+.task-question{
+  font-size:.82rem;color:var(--off);letter-spacing:.02em;margin-bottom:1.4rem;
+  font-weight:400
+}
+.task-choices{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:2rem}
+.task-choice{
+  font-size:.73rem;letter-spacing:.06em;
+  padding:.6rem 1.2rem;border-radius:100px;
+  border:1px solid var(--edge);background:transparent;
+  color:var(--muted);cursor:none;
+  transition:all .3s cubic-bezier(.16,1,.3,1);
+  font-family:var(--sans)
+}
+.task-choice:hover{border-color:var(--edge2);color:var(--white);background:var(--lift)}
+.task-choice.selected{border-color:var(--red);color:var(--white);background:var(--red-dim)}
+
+/* Reveal panel — shows after selection */
+.task-reveal{
+  padding:1.8rem 0 0;
+  border-top:1px solid var(--edge);
+  margin-top:1rem;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1);
+  pointer-events:none
+}
+.task-reveal.shown{opacity:1;transform:translateY(0);pointer-events:auto}
+.reveal-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem}
+.reveal-text{
+  font-family:var(--serif);font-size:clamp(1rem,2vw,1.2rem);
+  font-style:italic;color:var(--off);line-height:1.6
+}
+.reveal-text strong{color:var(--white);font-style:normal;font-family:var(--sans);font-size:.88rem;font-weight:500}
+.reveal-next{margin-top:1.5rem;display:flex;align-items:center;gap:1rem}
+.reveal-cta{
+  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red);cursor:none;
+  display:flex;align-items:center;gap:.5rem;
+  transition:gap .2s
+}
+.reveal-cta:hover{gap:.8rem}
+.reveal-progress{font-size:.65rem;color:var(--muted);letter-spacing:.05em}
+.task-foot{
+  padding:1rem 2.5rem;background:var(--lift);
+  display:flex;justify-content:space-between;align-items:center
+}
+.task-foot-l{font-size:.63rem;color:var(--muted);letter-spacing:.05em}
+.task-foot-r{font-size:.63rem;color:var(--muted);letter-spacing:.05em}
+.pattern-chip{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--red);background:var(--red-dim);
+  border:1px solid rgba(200,53,42,.25);border-radius:100px;
+  padding:.25rem .7rem
 }
 
-.hero-left {}
+/* ── SCENE 5: AI LIVE ANALYSIS ── */
+.s-ai{padding:9rem var(--page);border-top:1px solid var(--edge);position:relative;overflow:hidden}
+.s-ai::before{content:'';position:absolute;top:-180px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(200,53,42,.055) 0%,transparent 70%);pointer-events:none}
+.ai-inner{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:1fr 1.05fr;gap:6rem;align-items:center}
+.ai-left h2{font-family:var(--serif);font-size:clamp(2rem,4.5vw,4.5rem);font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:1.4rem}
+.ai-left h2 em{font-style:italic;color:var(--red)}
+.ai-left p{font-size:.93rem;color:var(--off);line-height:1.88;font-weight:300;max-width:370px;margin-bottom:2.5rem}
 
-.hero-tag {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--red);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
+/* AI card — now live + typewriter */
+.ai-card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;overflow:hidden;position:relative}
+.ai-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red) 0%,transparent 60%)}
+.ai-hdr{padding:1.4rem 2rem;border-bottom:1px solid var(--edge);display:flex;align-items:center;gap:.9rem}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
+.ai-status{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.ai-status-text{transition:color .3s}
+.ai-model{margin-left:auto;font-size:.63rem;letter-spacing:.1em;color:var(--muted);background:var(--lift);padding:.22rem .7rem;border-radius:100px}
+.ai-body{padding:2.2rem;min-height:200px}
+.ai-typing{
+  font-family:var(--serif);font-size:1.05rem;font-style:italic;
+  line-height:1.72;color:var(--off);
+  border-left:1px solid var(--red);padding-left:1.4rem;margin-bottom:1.8rem;
+  min-height:5.5rem
 }
-.hero-tag::before {
-  content: '';
-  width: 30px; height: 1px;
-  background: var(--red);
+.ai-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:var(--red);vertical-align:middle;margin-left:2px;
+  animation:blink .7s step-end infinite
 }
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.8rem;opacity:0;transition:opacity .6s}
+.chips.shown{opacity:1}
+.chip{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--lift);padding:.3rem .8rem;border-radius:100px;border:1px solid var(--edge)}
+.chip.alert{color:var(--red);border-color:rgba(200,53,42,.3);background:var(--red-dim)}
+.ai-foot{padding:1.1rem 2rem;background:var(--lift);display:flex;justify-content:space-between}
+.ai-foot span{font-size:.63rem;letter-spacing:.1em;color:var(--muted)}
 
-.hero h1 {
-  font-size: clamp(3.5rem, 6vw, 6rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -2px;
-  margin-bottom: 2rem;
+/* AI replay button */
+.ai-replay{
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);cursor:none;display:flex;align-items:center;gap:.4rem;
+  transition:color .2s;border:none;background:none;padding:0;font-family:var(--sans)
 }
-.hero h1 .line { display: block; overflow: hidden; }
-.hero h1 .line span {
-  display: block;
-  transform: translateY(100%);
-  animation: slideUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.hero h1 .line:nth-child(2) span { animation-delay: 0.1s; }
-.hero h1 .line:nth-child(3) span { animation-delay: 0.2s; }
-.hero h1 .red { color: var(--red); }
+.ai-replay:hover{color:var(--red)}
 
-@keyframes slideUp {
-  to { transform: translateY(0); }
-}
-
-.hero-desc {
-  font-size: 1.05rem;
-  color: var(--grey);
-  line-height: 1.9;
-  max-width: 480px;
-  margin-bottom: 3rem;
-  opacity: 0;
-  animation: fadeIn 0.8s ease 0.6s forwards;
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-.hero-btns {
-  display: flex;
-  gap: 1.2rem;
-  opacity: 0;
-  animation: fadeIn 0.8s ease 0.8s forwards;
-}
-
-.btn-red {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--white);
-  background: var(--red);
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 2px;
-  cursor: none;
-  text-decoration: none;
-  transition: all 0.3s;
-  box-shadow: 0 0 0 var(--red-glow);
-}
-.btn-red:hover {
-  background: var(--red-bright);
-  box-shadow: 0 0 30px var(--red-glow);
-  transform: translateY(-2px);
-}
-
-.btn-outline {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--grey);
-  background: transparent;
-  border: 1px solid var(--border);
-  padding: 1rem 2rem;
-  border-radius: 2px;
-  cursor: none;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-.btn-outline:hover {
-  color: var(--white);
-  border-color: rgba(255,255,255,0.3);
-}
-
-/* Hero right — terminal */
-.terminal {
-  background: var(--dark);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  opacity: 0;
-  animation: fadeIn 1s ease 1s forwards;
-  box-shadow: 0 0 60px rgba(0,0,0,0.5);
-}
-.terminal-bar {
-  background: #252525;
-  padding: 0.8rem 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  border-bottom: 1px solid var(--border);
-}
-.dot { width: 12px; height: 12px; border-radius: 50%; }
-.dot.r { background: #ff5f57; }
-.dot.y { background: #febc2e; }
-.dot.g { background: #28c840; }
-.terminal-title {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--grey);
-  margin-left: auto;
-  margin-right: auto;
-}
-.terminal-body {
-  padding: 1.5rem;
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  line-height: 2;
-  min-height: 280px;
-}
-.t-line { color: var(--grey); }
-.t-line .prompt { color: var(--red); }
-.t-line .cmd { color: var(--white); }
-.t-line .out { color: #4ade80; }
-.t-line .warn { color: #fbbf24; }
-.t-line .err { color: var(--red-bright); }
-.t-cursor {
-  display: inline-block;
-  width: 8px; height: 14px;
-  background: var(--red);
-  animation: blink 1s infinite;
-  vertical-align: middle;
-  margin-left: 2px;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* ── MARQUEE ── */
-.marquee-wrap {
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 1.2rem 0;
-  overflow: hidden;
-  white-space: nowrap;
-  background: var(--dark);
-}
-.marquee-track {
-  display: inline-flex;
-  gap: 3rem;
-  animation: marquee 20s linear infinite;
-}
-.marquee-item {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--grey);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.marquee-item .sep { color: var(--red); font-size: 1rem; }
-@keyframes marquee { to { transform: translateX(-50%); } }
-
-/* ── SECTIONS COMMON ── */
-.section {
-  padding: 8rem 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.section-label {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--red);
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.section-label::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--red);
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-
-/* ── PROBLEM SECTION ── */
-.problem-section {
-  padding: 8rem 4rem;
-  border-top: 1px solid var(--border);
-  background: var(--dark);
-}
-.problem-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.problem-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: end;
-  margin-bottom: 5rem;
-}
-.problem-header h2 {
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1.05;
-}
-.problem-header p {
-  color: var(--grey);
-  font-size: 1rem;
-  line-height: 1.9;
-  max-width: 400px;
-  align-self: end;
-}
-.problem-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-}
-.problem-card {
-  background: var(--dark);
-  padding: 3rem 2.5rem;
-  transition: background 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.problem-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--red);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-}
-.problem-card:hover::after { transform: scaleX(1); }
-.problem-card:hover { background: #1f1f1f; }
-.p-num {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--red);
-  letter-spacing: 2px;
-  margin-bottom: 2rem;
-}
-.p-icon { font-size: 2rem; margin-bottom: 1.5rem; display: block; }
-.problem-card h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  letter-spacing: -0.5px;
-}
-.problem-card p { color: var(--grey); font-size: 0.9rem; line-height: 1.8; }
-
-/* ── HOW IT WORKS ── */
-.steps-section {
-  padding: 8rem 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3rem;
-  margin-top: 4rem;
-}
-.step-item { position: relative; }
-.step-item:not(:last-child)::after {
-  content: '→';
-  position: absolute;
-  right: -1.5rem;
-  top: 0.5rem;
-  color: var(--red);
-  font-family: var(--mono);
-  font-size: 1rem;
-}
-.step-num {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--red);
-  letter-spacing: 2px;
-  margin-bottom: 1.5rem;
-}
-.step-item h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin-bottom: 0.8rem;
-  letter-spacing: -0.3px;
-}
-.step-item p { color: var(--grey); font-size: 0.9rem; line-height: 1.7; }
-
-/* ── SCORE SECTION ── */
-.score-section {
-  padding: 8rem 4rem;
-  background: var(--dark);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.score-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6rem;
-  align-items: center;
-}
-.score-left h2 {
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1.05;
-  margin-bottom: 1.5rem;
-}
-.score-left p { color: var(--grey); line-height: 1.9; margin-bottom: 2.5rem; }
-.score-rules { display: flex; flex-direction: column; gap: 1rem; }
-.rule-item {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  padding: 1rem 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  transition: border-color 0.3s, background 0.3s;
-}
-.rule-item:hover { border-color: var(--red); background: rgba(192,57,43,0.05); }
-.rule-pts {
-  font-family: var(--mono);
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--red);
-  min-width: 50px;
-}
-.rule-text h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
-.rule-text p { font-size: 0.8rem; color: var(--grey); }
-
-/* Score card right */
-.score-display {
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3rem;
-}
-.score-display-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-.score-display-top span {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--grey);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.score-big-num {
-  font-size: 5rem;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: -3px;
-  line-height: 1;
-}
-.score-big-num span { color: var(--red); }
-.score-track {
-  background: #222;
-  height: 4px;
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 1.5rem 0;
-}
-.score-fill {
-  height: 100%;
-  width: 0;
-  background: var(--red);
-  border-radius: 2px;
-  transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
-}
-.score-metrics-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-.sm {
-  text-align: center;
-  padding: 1rem;
-  background: #181818;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-}
-.sm .v { font-size: 1.8rem; font-weight: 700; font-family: var(--mono); }
-.sm .k { font-size: 0.7rem; color: var(--grey); margin-top: 0.3rem; font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
-.green { color: #4ade80; }
-.yellow { color: #fbbf24; }
-.red-c { color: var(--red-bright); }
-
-/* ── AI SECTION ── */
-.ai-section {
-  padding: 8rem 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.ai-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: center;
-  margin-top: 4rem;
-}
-.ai-left h2 {
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1.05;
-  margin-bottom: 1.5rem;
-}
-.ai-left p { color: var(--grey); line-height: 1.9; }
-.ai-card {
-  background: var(--dark);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 2.5rem;
-  position: relative;
-  overflow: hidden;
-}
-.ai-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--red), transparent);
-}
-.ai-card-tag {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--red);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.ai-card-tag::before {
-  content: '';
-  width: 6px; height: 6px;
-  background: var(--red);
-  border-radius: 50%;
-  animation: blink 1.5s infinite;
-}
-.ai-quote {
-  font-size: 1rem;
-  line-height: 1.9;
-  color: #ccc;
-  border-left: 2px solid var(--red);
-  padding-left: 1.5rem;
-}
-.ai-footer {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.ai-footer span {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--grey);
-}
+/* ── SCENE 6: SCORE ── */
+.s-score{padding:9rem var(--page);border-top:1px solid var(--edge);background:var(--surface)}
+.score-hdr{text-align:center;margin-bottom:5rem;max-width:1360px;margin-left:auto;margin-right:auto}
+.score-hdr h2{font-family:var(--serif);font-size:clamp(2rem,5vw,5.5rem);font-weight:400;line-height:.95;letter-spacing:-.025em;margin-bottom:.8rem}
+.score-hdr h2 em{font-style:italic;color:var(--red)}
+.score-hdr p{font-size:.93rem;color:var(--muted);font-weight:300}
+.score-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--edge);max-width:1360px;margin:0 auto}
+.score-card{background:var(--surface);padding:2.5rem 2rem;text-align:center;transition:background .3s;cursor:none;position:relative;overflow:hidden}
+.score-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--red-dim) 0%,transparent 60%);opacity:0;transition:opacity .4s}
+.score-card:hover{background:var(--panel)}
+.score-card:hover::after{opacity:1}
+.score-pts{font-family:var(--serif);font-size:3rem;font-style:italic;color:var(--red);line-height:1;margin-bottom:.9rem}
+.score-t{font-size:.9rem;font-weight:500;margin-bottom:.45rem;letter-spacing:-.01em}
+.score-d{font-size:.78rem;color:var(--muted);line-height:1.6;font-weight:300}
 
 /* ── CTA ── */
-.cta-section {
-  padding: 10rem 4rem;
-  text-align: center;
-  border-top: 1px solid var(--border);
-  background: var(--dark);
-  position: relative;
-  overflow: hidden;
-}
-.cta-section::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(192,57,43,0.08), transparent 70%);
-  pointer-events: none;
-}
-.cta-section h2 {
-  font-size: clamp(3rem, 6vw, 6rem);
-  font-weight: 700;
-  letter-spacing: -3px;
-  line-height: 1;
-  margin-bottom: 2rem;
-}
-.cta-section h2 span { color: var(--red); }
-.cta-section p {
-  color: var(--grey);
-  font-size: 1.1rem;
-  margin-bottom: 3rem;
-}
+.s-cta{padding:11rem var(--page);border-top:1px solid var(--edge);text-align:center;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden}
+.cta-bg-w{font-family:var(--serif);font-size:38vw;font-style:italic;color:var(--panel);white-space:nowrap;letter-spacing:-.05em;line-height:1;user-select:none}
+.cta-in{position:relative;z-index:2}
+.cta-eye{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:2rem;display:flex;align-items:center;justify-content:center;gap:.8rem}
+.cta-eye::before,.cta-eye::after{content:'';width:22px;height:1px;background:var(--red)}
+.cta-h{font-family:var(--serif);font-size:clamp(3rem,8vw,8rem);font-weight:400;line-height:.92;letter-spacing:-.035em;margin-bottom:1.8rem}
+.cta-h em{font-style:italic;color:var(--red)}
+.cta-p{font-size:.97rem;color:var(--off);font-weight:300;max-width:400px;margin:0 auto 3.5rem;line-height:1.75}
+.cta-btns{display:flex;gap:1rem;justify-content:center}
 
-/* ── FOOTER ── */
-footer {
-  padding: 2rem 4rem;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* FOOTER */
+footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center}
+.flogo{font-family:var(--serif);font-size:.9rem;font-style:italic;color:var(--muted)}
+.flogo em{color:var(--red);font-style:normal}
+.fr{font-size:.65rem;letter-spacing:.1em;color:var(--muted)}
+
+/* REVEAL BASE */
+.rv{opacity:0;transform:translateY(28px)}
+.rv-l{opacity:0;transform:translateX(-24px)}
+.rv-s{opacity:0;transform:scale(.96)}
+.rv.done,.rv-l.done,.rv-s.done{transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+
+/* RESPONSIVE */
+@media(max-width:980px){
+  .contra-pair{grid-template-columns:1fr;gap:1.2rem}.c-arrow{align-self:center;transform:rotate(90deg)}
+  .clock-wrap{grid-template-columns:1fr}.clock-box{width:260px;height:260px;margin:0 auto}
+  .proof-hdr{grid-template-columns:1fr;gap:2rem}
+  .ai-inner{grid-template-columns:1fr;gap:3rem}
+  .score-cards{grid-template-columns:1fr 1fr}
+  .h-sub{flex-direction:column;gap:2rem;align-items:flex-start}
+  .nlinks{display:none}
+  .sprogress{display:none}
+  .cta-btns{flex-direction:column;align-items:center}
+  #mirror{max-width:calc(100vw - 2rem);right:1rem;bottom:1rem}
 }
-.footer-logo {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--grey);
+@media(max-width:580px){
+  .score-cards{grid-template-columns:1fr}
+  .task-choices{flex-direction:column}
 }
-.footer-logo span { color: var(--red); }
-.footer-right {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--grey);
-  letter-spacing: 1px;
-}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 
-<!-- CUSTOM CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
+<div id="cur"></div>
+<div id="cur-r"></div>
+<canvas id="cvbg"></canvas>
 
-<!-- BOOT SCREEN -->
-<div id="boot">
-  <div class="boot-line" id="b0">$ initializing honestday_v1.0...</div>
-  <div class="boot-line" id="b1">$ loading behavioral modules... <span style="color:#4ade80">OK</span></div>
-  <div class="boot-line" id="b2">$ connecting to groq inference engine... <span style="color:#4ade80">OK</span></div>
-  <div class="boot-line" id="b3">$ mounting procrastination_tracker.db... <span style="color:#4ade80">OK</span></div>
-  <div class="boot-line" id="b4">$ running honesty_score_algorithm... <span style="color:#4ade80">OK</span></div>
-  <div class="boot-line" id="b5">$ system ready. confronting avoidance patterns.</div>
-  <div id="boot-bar"><div id="boot-fill"></div></div>
+<!-- MIRROR MOMENT — fixed behavioral observer -->
+<div id="mirror">
+  <div class="mirror-top">
+    <div class="mirror-dot"></div>
+    <span class="mirror-label">Behavioral Observation</span>
+  </div>
+  <p class="mirror-msg" id="mirror-msg">You've been here for <em id="mirror-time">0:30</em>.</p>
+  <p class="mirror-sub" id="mirror-sub">Notice what you did — and didn't — click.</p>
+</div>
+
+<!-- LOADER — behavioral priming -->
+<div id="loader">
+  <div style="text-align:center">
+    <p class="l-question" id="lq">Think of something you've been <em>putting off.</em></p>
+    <span class="lw"><span id="lw1">Honest</span></span>
+    <span class="lw italic"><span id="lw2">Day.</span></span>
+    <div class="l-count" id="lcnt">Hold that thought</div>
+    <div class="l-bar"><div class="l-fill" id="lfill"></div></div>
+  </div>
 </div>
 
 <!-- MAIN -->
 <div id="main">
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Honest<span>Day</span></div>
-  <div class="nav-links">
-    <a href="#problem">Problem</a>
-    <a href="#how">How It Works</a>
+<nav id="nav">
+  <div class="nlogo">Honest<em>Day</em></div>
+  <div class="nlinks">
+    <a href="#contra">The Problem</a>
+    <a href="#participate">Participate</a>
     <a href="#score">Score</a>
-    <a href="http://localhost:8501" target="_blank" class="nav-cta">Launch App →</a>
+    <a href="http://localhost:8501" target="_blank" class="ncta">Open App →</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section>
-  <div class="hero">
-    <div class="hero-left">
-      <div class="hero-tag">Procrastination Intelligence</div>
-      <h1>
-        <span class="line"><span>Stop</span></span>
-        <span class="line"><span>lying to</span></span>
-        <span class="line"><span class="red">yourself.</span></span>
-      </h1>
-      <p class="hero-desc">HonestDay tracks your tasks, scores your honesty, and uses AI to reveal the real patterns behind your procrastination — so you can actually change.</p>
-      <div class="hero-btns">
-        <a href="http://localhost:8501" target="_blank" class="btn-red">Launch App →</a>
-        <a href="#problem" class="btn-outline">See How It Works</a>
+<section class="hero">
+  <div class="h-eye">Behavioral Intelligence System</div>
+  <h1 class="hero-h">
+    <span class="ln"><span>You don't have</span></span>
+    <span class="ln"><span>a <em>time</em> problem.</span></span>
+  </h1>
+  <div class="h-sub">
+    <p class="h-desc">HonestDay is not a productivity app. It is a behavioral mirror — revealing the avoidance patterns, emotional triggers, and blind spots that keep you stuck.</p>
+    <div class="h-btns">
+      <a href="http://localhost:8501" target="_blank" class="btn btn-red lg">Begin Your Day →</a>
+      <a href="#contra" class="btn btn-ghost lg">See the evidence</a>
+    </div>
+  </div>
+  <div class="h-scroll">
+    <div class="h-scroll-line"></div>
+    <span>Scroll to reveal</span>
+  </div>
+</section>
+
+<!-- SCENE 1: CONTRADICTION -->
+<section class="s-contra" id="contra">
+  <div class="contra-inner">
+    <div class="contra-pair">
+      <div class="c-old rv">
+        <div class="c-old-t">You need better time management.</div>
+      </div>
+      <div class="c-arrow rv" style="text-align:center;">→</div>
+      <div class="c-new rv">
+        <div class="c-new-t">You need to understand what you're avoiding — and why.</div>
       </div>
     </div>
-    <div class="terminal">
-      <div class="terminal-bar">
-        <div class="dot r"></div>
-        <div class="dot y"></div>
-        <div class="dot g"></div>
-        <div class="terminal-title">honestday — dashboard</div>
+    <div class="contra-stmt rv">
+      <p>Every task you didn't do was a choice. You chose something else — comfort, distraction, <em>fear of being judged</em>. HonestDay makes that choice visible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 2: PROOF / CLOCK -->
+<section class="s-proof" id="proof">
+  <div class="proof-hdr">
+    <h2 class="rv">Your behavior<br>is <em>measurable.</em></h2>
+    <div class="rv">
+      <p>Most tools measure output. HonestDay measures the gap between intent and action — the avoidance window, the emotional patterns, the blind spots that cost you years.</p>
+    </div>
+  </div>
+  <div class="clock-wrap">
+    <div class="clock-box rv-s">
+      <canvas class="clock-cv" id="clockCv"></canvas>
+      <div class="clock-ct">
+        <div class="clock-pct" id="clockPct">0<span>%</span></div>
+        <div class="clock-lbl">Avoidance Rate</div>
       </div>
-      <div class="terminal-body" id="terminal-body">
+    </div>
+    <div class="stat-list">
+      <div class="stat-row rv"><div class="stat-lbl">Fear of Failure<small>Primary avoidance trigger</small></div><div class="stat-bar"><div class="stat-fill" style="background:var(--red)" data-w="68"></div></div><div class="stat-n">68%</div></div>
+      <div class="stat-row rv" style="transition-delay:.08s"><div class="stat-lbl">Overwhelm<small>Task perceived too large</small></div><div class="stat-bar"><div class="stat-fill" style="background:#e08020" data-w="54"></div></div><div class="stat-n">54%</div></div>
+      <div class="stat-row rv" style="transition-delay:.16s"><div class="stat-lbl">Low dopamine<small>Task feels unrewarding</small></div><div class="stat-bar"><div class="stat-fill" style="background:#8b6ab5" data-w="41"></div></div><div class="stat-n">41%</div></div>
+      <div class="stat-row rv" style="transition-delay:.24s"><div class="stat-lbl">Uncertainty<small>No clear path forward</small></div><div class="stat-bar"><div class="stat-fill" style="background:#3a9dd4" data-w="33"></div></div><div class="stat-n">33%</div></div>
+      <div class="stat-row rv" style="transition-delay:.32s"><div class="stat-lbl">Completed honestly<small>Did the work, told the truth</small></div><div class="stat-bar"><div class="stat-fill" style="background:#3a9d5c" data-w="22"></div></div><div class="stat-n">22%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3: SCROLL STORY -->
+<div class="s-story" id="story">
+  <div class="story-scroll">
+    <div class="story-sticky">
+      <div class="s-panel" id="sp1">
+        <div class="s-panel-in">
+          <div class="s-tag">The Pattern</div>
+          <h2 class="s-big">You don't have<br>a <em>time</em> problem.</h2>
+          <p class="s-body">Every person who ever said "I'll do it later" had the time. The hour existed. The task waited. Something else happened instead.</p>
+        </div>
+      </div>
+      <div class="s-panel" id="sp2">
+        <div class="s-panel-in">
+          <div class="s-tag">The Diagnosis</div>
+          <h2 class="s-big">You have an<br><em>avoidance</em> problem.</h2>
+          <p class="s-body">Avoidance is not laziness. It is a learned emotional response to anticipated discomfort, judgment, or failure. Your brain chose safety over progress.</p>
+        </div>
+      </div>
+      <div class="s-panel" id="sp3">
+        <div class="s-panel-in">
+          <div class="s-tag">The Evidence</div>
+          <h2 class="s-big">We can<br><em>prove it.</em></h2>
+          <p class="s-body">Log seven days honestly. The pattern emerges with statistical certainty — not as a feeling, but as verifiable data about your specific behavior.</p>
+        </div>
+      </div>
+      <div class="s-panel" id="sp4">
+        <div class="s-panel-in">
+          <div class="s-tag">The Change</div>
+          <h2 class="s-big">Your first<br><em>honest day</em><br>starts now.</h2>
+          <p class="s-body">Awareness is the only intervention that actually works. When you see your patterns clearly, you change them — not through willpower, but through understanding.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sprogress" id="sprogress">
+  <div class="sdot" data-p="1"></div>
+  <div class="sdot" data-p="2"></div>
+  <div class="sdot" data-p="3"></div>
+  <div class="sdot" data-p="4"></div>
+</div>
+
+<!-- SCENE 4: PARTICIPATION (replaces How It Works) -->
+<section class="s-participate" id="participate">
+  <div class="part-inner">
+    <div class="part-hdr rv">
+      <div class="eyebrow">Live Behavioral Diagnosis</div>
+      <h2>Think of a task<br>you keep <em>avoiding.</em></h2>
+    </div>
+    <div class="task-card rv" style="transition-delay:.12s">
+      <div class="task-hdr">
+        <div class="task-dot"></div>
+        <span class="task-hdr-label">Behavioral Session — Task Analysis</span>
+        <span class="task-date" id="part-date"></span>
+      </div>
+      <div class="task-body">
+        <div class="task-name" id="task-title">"Send the email I've been drafting for three days."</div>
+        <div class="task-meta">Difficulty: Hard &nbsp;·&nbsp; Days avoided: 3 &nbsp;·&nbsp; Category: Communication</div>
+
+        <div id="step-1">
+          <p class="task-question">Why haven't you sent it?</p>
+          <div class="task-choices" id="choices-1">
+            <button class="task-choice" data-trigger="fear" onclick="pickChoice(this,1)">I'm afraid of the response</button>
+            <button class="task-choice" data-trigger="overwhelm" onclick="pickChoice(this,1)">It feels too complicated</button>
+            <button class="task-choice" data-trigger="perfectionism" onclick="pickChoice(this,1)">It's not perfect yet</button>
+            <button class="task-choice" data-trigger="unclear" onclick="pickChoice(this,1)">I don't know what I want to say</button>
+          </div>
+          <div class="task-reveal" id="reveal-1">
+            <div class="reveal-label">Pattern Identified</div>
+            <p class="reveal-text" id="reveal-text-1"></p>
+            <div class="reveal-next">
+              <span class="reveal-cta" onclick="nextStep(2)">Continue →</span>
+              <span class="reveal-progress">Step 1 of 2</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="step-2" style="display:none">
+          <p class="task-question">How long have you known you needed to send it?</p>
+          <div class="task-choices" id="choices-2">
+            <button class="task-choice" onclick="pickChoice(this,2,'days')">A few days</button>
+            <button class="task-choice" onclick="pickChoice(this,2,'week')">About a week</button>
+            <button class="task-choice" onclick="pickChoice(this,2,'weeks')">Several weeks</button>
+            <button class="task-choice" onclick="pickChoice(this,2,'longer')">Longer than I want to admit</button>
+          </div>
+          <div class="task-reveal" id="reveal-2">
+            <div class="reveal-label">This Is The Pattern</div>
+            <p class="reveal-text" id="reveal-text-2"></p>
+            <div class="reveal-next" style="margin-top:1.2rem">
+              <a href="http://localhost:8501" target="_blank" class="btn btn-red" style="font-size:.72rem;padding:.75rem 1.5rem">Start tracking this →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="task-foot">
+        <span class="task-foot-l">HonestDay Behavioral Engine</span>
+        <span class="task-foot-r" id="part-chips"></span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item">Task Tracking <span class="sep">✦</span></span>
-    <span class="marquee-item">Honesty Score <span class="sep">✦</span></span>
-    <span class="marquee-item">Pattern Analysis <span class="sep">✦</span></span>
-    <span class="marquee-item">AI Insights <span class="sep">✦</span></span>
-    <span class="marquee-item">Behavioral Data <span class="sep">✦</span></span>
-    <span class="marquee-item">Procrastination Tracker <span class="sep">✦</span></span>
-    <span class="marquee-item">Task Tracking <span class="sep">✦</span></span>
-    <span class="marquee-item">Honesty Score <span class="sep">✦</span></span>
-    <span class="marquee-item">Pattern Analysis <span class="sep">✦</span></span>
-    <span class="marquee-item">AI Insights <span class="sep">✦</span></span>
-    <span class="marquee-item">Behavioral Data <span class="sep">✦</span></span>
-    <span class="marquee-item">Procrastination Tracker <span class="sep">✦</span></span>
-  </div>
-</div>
-
-<!-- PROBLEM -->
-<div class="problem-section" id="problem">
-  <div class="problem-inner">
-    <div class="problem-header reveal">
-      <h2>Why do you keep putting things off?</h2>
-      <p>Most apps give you to-do lists. None of them ask the real question — why aren't you doing the work?</p>
+<!-- SCENE 5: AI LIVE ANALYSIS -->
+<section class="s-ai" id="ai">
+  <div class="ai-inner">
+    <div class="ai-left rv">
+      <div class="eye">AI Analysis</div>
+      <h2>Not motivation.<br><em>Confrontation.</em></h2>
+      <p>The AI reads your behavioral data and tells you what is actually happening — not what you want to hear. It identifies the pattern you cannot see from inside it.</p>
+      <a href="http://localhost:8501" target="_blank" class="btn btn-red">Generate My Analysis →</a>
     </div>
-    <div class="problem-grid">
-      <div class="problem-card reveal">
-        <div class="p-num">01</div>
-        <span class="p-icon">🌊</span>
-        <h3>Feels Overwhelming</h3>
-        <p>The task looks too big before you even start. So you don't start. HonestDay makes you name it.</p>
+    <div class="ai-card rv" style="transition-delay:.18s">
+      <div class="ai-hdr">
+        <div class="ai-dot"></div>
+        <span class="ai-status"><span class="ai-status-text" id="ai-status-text">Analyzing behavioral data</span></span>
+        <span class="ai-model">Groq · Llama-3.1</span>
       </div>
-      <div class="problem-card reveal" style="transition-delay:0.1s">
-        <div class="p-num">02</div>
-        <span class="p-icon">😴</span>
-        <h3>Too Boring</h3>
-        <p>Your brain craves dopamine. If the task doesn't provide it, your mind finds something that does.</p>
-      </div>
-      <div class="problem-card reveal" style="transition-delay:0.2s">
-        <div class="p-num">03</div>
-        <span class="p-icon">😰</span>
-        <h3>Fear of Failure</h3>
-        <p>Overthinking kills more tasks than laziness ever did. Recognizing this pattern breaks it.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="steps-section" id="how">
-  <div class="section-label reveal">How It Works</div>
-  <h2 class="reveal" style="font-size:clamp(2.5rem,4vw,4rem);font-weight:700;letter-spacing:-2px;line-height:1.05;transition-delay:0.1s">Four steps to<br>self-awareness.</h2>
-  <div class="steps-grid">
-    <div class="step-item reveal" style="transition-delay:0s">
-      <div class="step-num">STEP 01</div>
-      <h3>Log Your Task</h3>
-      <p>Enter the task name, difficulty level, and whether you completed it, partially did it, or avoided it.</p>
-    </div>
-    <div class="step-item reveal" style="transition-delay:0.1s">
-      <div class="step-num">STEP 02</div>
-      <h3>Be Honest</h3>
-      <p>If you avoided it, tell the system why. Honesty is rewarded in the score. Lying defeats the purpose.</p>
-    </div>
-    <div class="step-item reveal" style="transition-delay:0.2s">
-      <div class="step-num">STEP 03</div>
-      <h3>See Patterns</h3>
-      <p>Three live charts reveal when, why, and what type of tasks you avoid most. Your blind spots, visible.</p>
-    </div>
-    <div class="step-item reveal" style="transition-delay:0.3s">
-      <div class="step-num">STEP 04</div>
-      <h3>Get AI Insight</h3>
-      <p>A personalized 3-sentence analysis built from your real behavioral data. Not generic advice.</p>
-    </div>
-  </div>
-</div>
-
-<!-- SCORE -->
-<div class="score-section" id="score">
-  <div class="score-inner">
-    <div class="score-left reveal">
-      <div class="section-label">The Score System</div>
-      <h2>Rewarding honesty<br>over performance.</h2>
-      <p>Most apps punish you for not completing tasks. HonestDay rewards you for being truthful about why.</p>
-      <div class="score-rules">
-        <div class="rule-item">
-          <div class="rule-pts">+10</div>
-          <div class="rule-text">
-            <h4>Task Completed</h4>
-            <p>You did the work. Full credit.</p>
-          </div>
-        </div>
-        <div class="rule-item">
-          <div class="rule-pts">+5</div>
-          <div class="rule-text">
-            <h4>Hard Task Bonus</h4>
-            <p>Finishing difficult tasks gets extra recognition.</p>
-          </div>
-        </div>
-        <div class="rule-item">
-          <div class="rule-pts">+4</div>
-          <div class="rule-text">
-            <h4>Partial Completion</h4>
-            <p>You started. That matters more than nothing.</p>
-          </div>
-        </div>
-        <div class="rule-item">
-          <div class="rule-pts">+2</div>
-          <div class="rule-text">
-            <h4>Avoided — But Honest</h4>
-            <p>You admitted it instead of lying. That's worth something.</p>
-          </div>
+      <div class="ai-body">
+        <p class="ai-typing" id="ai-typing"><span class="ai-cursor"></span></p>
+        <div class="chips" id="ai-chips">
+          <span class="chip">18 tasks analyzed</span>
+          <span class="chip alert">22% avoidance rate</span>
+          <span class="chip">Fear of failure: primary trigger</span>
+          <span class="chip">Pattern: post-10am avoidance</span>
         </div>
       </div>
-    </div>
-    <div class="score-display reveal" style="transition-delay:0.2s">
-      <div class="score-display-top">
-        <span>Honesty Score</span>
-        <span id="score-date"></span>
-      </div>
-      <div class="score-big-num">73<span>%</span></div>
-      <div style="color:#888;font-size:0.85rem;margin-top:0.5rem;font-family:var(--mono)">
-        💪 Good effort. Push harder on difficult tasks.
-      </div>
-      <div class="score-track">
-        <div class="score-fill" id="score-fill"></div>
-      </div>
-      <div class="score-metrics-row">
-        <div class="sm"><div class="v green">5</div><div class="k">Completed</div></div>
-        <div class="sm"><div class="v yellow">3</div><div class="k">Partial</div></div>
-        <div class="sm"><div class="v red-c">2</div><div class="k">Avoided</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- AI -->
-<div class="ai-section">
-  <div class="ai-grid">
-    <div class="ai-left reveal">
-      <div class="section-label">AI Powered</div>
-      <h2>Not motivation.<br>Confrontation.</h2>
-      <p>Our AI reads your actual behavioral data and tells you what's really happening — not what you want to hear. Powered by Groq's Llama inference engine.</p>
-    </div>
-    <div class="ai-card reveal" style="transition-delay:0.2s">
-      <div class="ai-card-tag">Live AI Insight</div>
-      <p class="ai-quote">"You consistently avoid tasks when they involve uncertainty or potential judgment. Hard tasks get skipped not because of difficulty — but because failure feels personal. Start with the hardest task first. Your avoidance window closes after 10am."</p>
-      <div class="ai-footer">
+      <div class="ai-foot">
         <span>Generated from behavioral data</span>
-        <span>Groq / Llama-3.1</span>
+        <button class="ai-replay" id="ai-replay" onclick="replayAI()">↺ Replay</button>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- LIVE APP EMBED -->
-<div style="padding: 6rem 4rem; background: var(--dark); border-top: 1px solid var(--border);">
-  <div style="max-width:1400px; margin:0 auto;">
-    <div class="section-label reveal">Live App</div>
-    <h2 class="reveal" style="font-size:clamp(2rem,4vw,3.5rem);font-weight:700;letter-spacing:-2px;margin-bottom:3rem;transition-delay:0.1s">
-      Try it right now.
-    </h2>
-    <div class="reveal" style="transition-delay:0.2s;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
-      <div style="background:#252525;padding:0.8rem 1.2rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid var(--border);">
-        <div class="dot r"></div>
-        <div class="dot y"></div>
-        <div class="dot g"></div>
-        <span style="font-family:var(--mono);font-size:0.75rem;color:var(--grey);margin:0 auto;">honestday — live dashboard</span>
+<!-- SCENE 6: SCORE -->
+<section class="s-score" id="score">
+  <div class="score-hdr rv">
+    <div class="eye" style="justify-content:center">The Score System</div>
+    <h2>Rewarding <em>honesty</em><br>over performance.</h2>
+    <p>Most apps punish you for not finishing. HonestDay rewards you for being truthful about why.</p>
+  </div>
+  <div class="score-cards">
+    <div class="score-card rv"><div class="score-pts">+10</div><div class="score-t">Task Completed</div><p class="score-d">You did the work. Full recognition for following through.</p></div>
+    <div class="score-card rv" style="transition-delay:.08s"><div class="score-pts">+5</div><div class="score-t">Hard Task Bonus</div><p class="score-d">Difficult completions earn extra credit. The system knows it was harder.</p></div>
+    <div class="score-card rv" style="transition-delay:.16s"><div class="score-pts">+4</div><div class="score-t">Partial Completion</div><p class="score-d">You started. That matters more than nothing, and the system reflects it.</p></div>
+    <div class="score-card rv" style="transition-delay:.24s"><div class="score-pts">+2</div><div class="score-t">Avoided, but Honest</div><p class="score-d">You admitted it instead of pretending. Honesty earns points. Self-deception earns nothing.</p></div>
+  </div>
+</section>
+
+<!-- SCENE 7: LIVE APP EMBED -->
+<section style="padding:7rem var(--page);border-top:1px solid var(--edge);background:var(--surface)" id="app">
+  <div style="max-width:1360px;margin:0 auto">
+    <div class="eye rv">Live Application</div>
+    <h2 class="rv" style="font-family:var(--serif);font-size:clamp(2rem,5vw,4.5rem);font-weight:400;line-height:1;letter-spacing:-.025em;margin-bottom:.8rem;transition-delay:.1s">Try it <em style="font-style:italic;color:var(--red)">right now.</em></h2>
+    <p class="rv" style="font-size:.93rem;color:var(--muted);font-weight:300;margin-bottom:3rem;transition-delay:.15s">No signup. No install. Log your first task below and watch your patterns emerge.</p>
+    <div class="rv" style="transition-delay:.2s;border:1px solid var(--edge);border-radius:12px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 60px rgba(200,53,42,.06)">
+      <div style="background:var(--lift);padding:.9rem 1.4rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--edge)">
+        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
+        <span style="font-size:.68rem;letter-spacing:.12em;color:var(--muted);margin:0 auto;text-transform:uppercase">honestday — live dashboard · localhost:8501</span>
       </div>
-      <iframe
-        src="http://localhost:8501"
-        width="100%"
-        height="800px"
-        frameborder="0"
-        style="display:block;background:#0d0d0d;">
-      </iframe>
+      <div style="position:relative;background:var(--ink)">
+        <iframe src="http://localhost:8501" width="100%" height="860px" frameborder="0" style="display:block;background:#080808" id="app-iframe"></iframe>
+        <div id="iframe-fallback" style="display:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;background:var(--ink);border-top:1px solid var(--edge)">
+          <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red)">App Not Running</div>
+          <p style="font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--muted);text-align:center;max-width:400px">Start Streamlit first, then reload this page.</p>
+          <code style="font-size:.8rem;background:var(--panel);border:1px solid var(--edge);padding:.8rem 1.5rem;border-radius:6px;color:var(--off)">python -m streamlit run app.py</code>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- FOOTER -->
+<!-- SCENE 8: CTA -->
+<section class="s-cta">
+  <div class="cta-bg"><div class="cta-bg-w">Honest</div></div>
+  <div class="cta-in">
+    <div class="cta-eye">Begin Now</div>
+    <h2 class="cta-h rv">Start your first<br><em>honest day.</em></h2>
+    <p class="cta-p rv">No sign-up. No install. Open the app, log your first task, and watch your patterns emerge.</p>
+    <div class="cta-btns rv">
+      <a href="http://localhost:8501" target="_blank" class="btn btn-red lg">Open HonestDay →</a>
+      <a href="#contra" class="btn btn-ghost lg">Read the evidence</a>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <div class="footer-logo">Honest<span>Day</span> — Built at Hackathon 2026</div>
-  <div class="footer-right">Powered by Streamlit + Groq AI</div>
+  <div class="flogo">Honest<em>Day</em> — Hackathon 2026</div>
+  <div class="fr">Streamlit · Groq AI · Python · Built in 1 day</div>
 </footer>
 
-</div><!-- end #main -->
+</div><!-- /main -->
 
 <script>
-// ── CURSOR ──
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animCursor() {
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a, button').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+/* ─── CURSOR ─── */
+const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function tick(){
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  curR.style.left=rx+'px';curR.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('h'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('h'));
 });
 
-// ── BOOT SEQUENCE ──
-const bootLines = ['b0','b1','b2','b3','b4','b5'];
-const fill = document.getElementById('boot-fill');
-let i = 0;
-function showLine() {
-  if (i < bootLines.length) {
-    document.getElementById(bootLines[i]).classList.add('active');
-    fill.style.width = ((i+1)/bootLines.length*100) + '%';
-    if (i > 0) document.getElementById(bootLines[i-1]).classList.add('done');
-    i++;
-    setTimeout(showLine, 400);
+/* ─── WEBGL CANVAS FALLBACK ─── */
+(function(){
+  const cv=document.getElementById('cvbg');
+  if(!cv)return;
+  const testGl=cv.getContext('webgl');
+  if(!testGl){
+    cv.style.display='none';
   } else {
-    setTimeout(() => {
-      document.getElementById('boot').style.opacity = '0';
-      document.getElementById('boot').style.transition = 'opacity 0.8s';
-      setTimeout(() => {
-        document.getElementById('boot').style.display = 'none';
-        document.getElementById('main').classList.add('visible');
-        startTerminal();
-      }, 800);
-    }, 600);
+    cv.style.opacity='.45';
   }
-}
-setTimeout(showLine, 300);
+})();
 
-// ── TERMINAL ANIMATION ──
-function startTerminal() {
-  const lines = [
-    { type:'prompt', text:'analyze --user current_session' },
-    { type:'out', text:'→ Sessions loaded: 12' },
-    { type:'out', text:'→ Tasks logged: 18' },
-    { type:'warn', text:'→ Avoided tasks: 4 (high risk)' },
-    { type:'prompt', text:'top_avoidance_reason' },
-    { type:'out', text:'→ "Felt too overwhelming" (×3)' },
-    { type:'prompt', text:'score --calculate' },
-    { type:'out', text:'→ Honesty Score: 73%' },
-    { type:'out', text:'→ Status: GOOD — keep pushing' },
-    { type:'prompt', text:'ai --generate insight' },
-    { type:'warn', text:'→ Connecting to Groq engine...' },
-    { type:'out', text:'→ Insight ready. Check dashboard.' },
+/* ─── AVOIDANCE GRAVITY FIELD (WebGL) ─── */
+/* Particles = tasks. Avoided tasks drift outward. Completed tasks orbit inward.
+   Mouse repels (avoidance). Center gravity = accountability. */
+(function(){
+  const cv=document.getElementById('cvbg');
+  const gl=cv.getContext('webgl');
+  if(!gl)return;
+  let W,H,mouse={x:.5,y:.5};
+  const N=180;
+  const pos=new Float32Array(N*2);
+  const vel=new Float32Array(N*2);
+  const life=new Float32Array(N);
+  // type: 0=avoided(drifts), 1=completed(orbits), 2=neutral
+  const type=new Float32Array(N);
+
+  const resize=()=>{W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;gl.viewport(0,0,W,H)};
+  window.addEventListener('resize',resize);resize();
+
+  for(let i=0;i<N;i++){
+    pos[i*2]=Math.random()*2-1;
+    pos[i*2+1]=Math.random()*2-1;
+    vel[i*2]=(Math.random()-.5)*.0012;
+    vel[i*2+1]=(Math.random()-.5)*.0012;
+    life[i]=Math.random();
+    type[i]=i<40?0:i<80?1:2; // 40 avoided, 40 completed, 100 neutral
+  }
+
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=1-e.clientY/innerHeight});
+
+  const vs=`
+    attribute vec2 p;attribute float l;attribute float t;
+    uniform vec2 m;varying float vl;varying float vd;varying float vt;
+    void main(){
+      vec2 d=p-((m*2.)-1.);
+      vd=length(d);vl=l;vt=t;
+      gl_Position=vec4(p,0,1);
+      gl_PointSize=mix(1.2,3.2,l)*(1.+smoothstep(.3,.0,vd)*1.2);
+    }`;
+  const fs=`
+    precision mediump float;
+    varying float vl;varying float vd;varying float vt;
+    void main(){
+      float d=length(gl_PointCoord-.5);
+      if(d>.5)discard;
+      float a=(1.-d*2.)*vl*.38;
+      float mi=smoothstep(.45,.0,vd);
+      // avoided=red, completed=green, neutral=grey
+      vec3 c;
+      if(vt<0.5)      c=mix(vec3(.12,.11,.14),vec3(.78,.21,.165),mi*.7+vl*.2); // avoided: red
+      else if(vt<1.5) c=mix(vec3(.11,.14,.11),vec3(.22,.61,.36),mi*.5+vl*.15); // completed: green
+      else            c=mix(vec3(.13,.13,.16),vec3(.3,.3,.38),mi*.3+vl*.1);   // neutral: grey
+      gl_FragColor=vec4(c,a);
+    }`;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const pr=gl.createProgram();
+  gl.attachShader(pr,mk(gl.VERTEX_SHADER,vs));
+  gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(pr);gl.useProgram(pr);
+
+  const pb=gl.createBuffer(),lb=gl.createBuffer(),tb=gl.createBuffer();
+  const ap=gl.getAttribLocation(pr,'p');
+  const al=gl.getAttribLocation(pr,'l');
+  const at=gl.getAttribLocation(pr,'t');
+  const um=gl.getUniformLocation(pr,'m');
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+
+  function frame(){
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    const mx2=mouse.x*2-1,my2=mouse.y*2-1;
+
+    for(let i=0;i<N;i++){
+      const t=type[i];
+      // Gravity toward center for completed (accountability), drift away for avoided
+      if(t===1){
+        // completed: gentle pull toward center
+        vel[i*2]+=-pos[i*2]*.00008;
+        vel[i*2+1]+=-pos[i*2+1]*.00008;
+      } else if(t===0){
+        // avoided: slow drift outward from center
+        const dist=Math.sqrt(pos[i*2]*pos[i*2]+pos[i*2+1]*pos[i*2+1]);
+        if(dist>0.01){
+          vel[i*2]+=(pos[i*2]/dist)*.00004;
+          vel[i*2+1]+=(pos[i*2+1]/dist)*.00004;
+        }
+      }
+
+      // Mouse repulsion (avoidance behavior — cursor pushes things away)
+      const dx=pos[i*2]-mx2,dy=pos[i*2+1]-my2;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<.3){vel[i*2]+=(dx/dist)*.00018;vel[i*2+1]+=(dy/dist)*.00018}
+
+      pos[i*2]+=vel[i*2];pos[i*2+1]+=vel[i*2+1];
+      // Damping
+      vel[i*2]*=.998;vel[i*2+1]*=.998;
+      life[i]-=.0014;
+
+      if(life[i]<=0||Math.abs(pos[i*2])>1.2||Math.abs(pos[i*2+1])>1.2){
+        const e=Math.floor(Math.random()*4);
+        if(e===0){pos[i*2]=Math.random()*2-1;pos[i*2+1]=-1.1}
+        else if(e===1){pos[i*2]=Math.random()*2-1;pos[i*2+1]=1.1}
+        else if(e===2){pos[i*2]=-1.1;pos[i*2+1]=Math.random()*2-1}
+        else{pos[i*2]=1.1;pos[i*2+1]=Math.random()*2-1}
+        vel[i*2]=(Math.random()-.5)*.0012;vel[i*2+1]=(Math.random()-.5)*.0012;
+        life[i]=.4+Math.random()*.6;
+      }
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER,pb);gl.bufferData(gl.ARRAY_BUFFER,pos,gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(ap);gl.vertexAttribPointer(ap,2,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,lb);gl.bufferData(gl.ARRAY_BUFFER,life,gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(al);gl.vertexAttribPointer(al,1,gl.FLOAT,false,0,0);
+    gl.bindBuffer(gl.ARRAY_BUFFER,tb);gl.bufferData(gl.ARRAY_BUFFER,type,gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,1,gl.FLOAT,false,0,0);
+    gl.uniform2f(um,mouse.x,mouse.y);
+    gl.drawArrays(gl.POINTS,0,N);
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ─── LOADER + GSAP ─── */
+gsap.registerPlugin(ScrollTrigger);
+gsap.set(['#lw1','#lw2'],{y:'110%'});
+
+gsap.timeline({
+  onComplete(){
+    gsap.to('#loader',{opacity:0,duration:.8,ease:'power2.inOut',onComplete(){
+      document.getElementById('loader').style.display='none';
+      enterPage();
+    }});
+  }
+})
+.to('#lq',{opacity:1,duration:.7,ease:'power2.out'},0)
+.to('#lw1',{y:'0%',duration:.9,ease:'expo.out'},0.9)
+.to('#lw2',{y:'0%',duration:.9,ease:'expo.out'},1.08)
+.to('.l-count',{opacity:1,duration:.4},1.4)
+.to('.l-bar',{opacity:1,duration:.3},1.52)
+.to('#lfill',{width:'100%',duration:1.35,ease:'power2.inOut'},1.58)
+.add(()=>document.getElementById('lcnt').textContent='Now — let\'s look at why.',2.7);
+
+/* ─── PAGE ENTRANCE ─── */
+function enterPage(){
+  document.getElementById('main').style.opacity='1';
+  gsap.to('#nav',{opacity:1,duration:.7,ease:'power2.out',delay:.1});
+  document.querySelectorAll('.hero-h .ln span').forEach((el,i)=>{
+    gsap.to(el,{y:'0%',duration:1.1,ease:'expo.out',delay:.12+i*.11});
+  });
+  gsap.to('.h-eye',{opacity:1,y:0,duration:.8,delay:.5,ease:'power2.out'});
+  gsap.to('.h-sub',{opacity:1,duration:.8,delay:.7,ease:'power2.out'});
+  gsap.to('.h-scroll',{opacity:1,duration:.8,delay:1.05,ease:'power2.out'});
+  setupScrollReveal();
+  setupStory();
+  setupClock();
+  setupMirror();
+  setupAI();
+}
+
+/* ─── SCROLL REVEAL ─── */
+function setupScrollReveal(){
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('done');
+        gsap.to(e.target,{opacity:1,y:0,x:0,scale:1,duration:.9,ease:'power3.out'});
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.08});
+  document.querySelectorAll('.rv,.rv-l,.rv-s').forEach(el=>io.observe(el));
+
+  const sio=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.stat-fill').forEach(f=>{
+          f.style.transition='width 1.6s cubic-bezier(.16,1,.3,1)';
+          f.style.width=f.dataset.w+'%';
+        });
+        sio.unobserve(e.target);
+      }
+    });
+  },{threshold:.15});
+  const sl=document.querySelector('.stat-list');
+  if(sl)sio.observe(sl);
+}
+
+/* ─── SCROLL STORY ─── */
+function setupStory(){
+  const panels=[document.getElementById('sp1'),document.getElementById('sp2'),document.getElementById('sp3'),document.getElementById('sp4')];
+  const dots=document.querySelectorAll('.sdot');
+  const prog=document.getElementById('sprogress');
+  let cur=0;
+  gsap.set(panels,{opacity:0,y:28});
+  function show(idx){
+    panels.forEach((p,i)=>{
+      if(i===idx) gsap.to(p,{opacity:1,y:0,duration:.65,ease:'power2.out'});
+      else gsap.to(p,{opacity:0,y:i<idx?-20:20,duration:.4,ease:'power2.in'});
+    });
+    dots.forEach((d,i)=>d.classList.toggle('on',i===idx));
+    cur=idx;
+  }
+  ScrollTrigger.create({
+    trigger:'#story',start:'top top',end:'bottom bottom',
+    pin:'.story-sticky',
+    onEnter:()=>{gsap.to(prog,{opacity:1,duration:.4});show(0)},
+    onLeave:()=>gsap.to(prog,{opacity:0,duration:.4}),
+    onEnterBack:()=>gsap.to(prog,{opacity:1,duration:.4}),
+    onLeaveBack:()=>gsap.to(prog,{opacity:0,duration:.4}),
+    onUpdate(self){
+      const p=self.progress;
+      const idx=p>=.75?3:p>=.5?2:p>=.25?1:0;
+      if(idx!==cur)show(idx);
+    }
+  });
+}
+
+/* ─── AVOIDANCE CLOCK ─── */
+function setupClock(){
+  const cv=document.getElementById('clockCv');
+  const ctx=cv.getContext('2d');
+  const DPR=devicePixelRatio||1,S=360;
+  cv.width=S*DPR;cv.height=S*DPR;ctx.scale(DPR,DPR);
+  const cx=S/2,cy=S/2,R=138;
+  const segs=[{pct:.28,c:'#c8352a'},{pct:.22,c:'#e08020'},{pct:.17,c:'#8b6ab5'},{pct:.11,c:'#3a9dd4'},{pct:.22,c:'#3a9d5c'}];
+  function draw(p){
+    ctx.clearRect(0,0,S,S);
+    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,.035)';ctx.lineWidth=22;ctx.stroke();
+    let a=-Math.PI/2;
+    segs.forEach(sg=>{
+      const da=sg.pct*Math.PI*2*p;
+      ctx.beginPath();ctx.arc(cx,cy,R,a,a+da);
+      ctx.strokeStyle=sg.c;ctx.lineWidth=18;ctx.lineCap='butt';ctx.stroke();
+      a+=da+.013;
+    });
+    [1,2,3].forEach(i=>{
+      ctx.beginPath();ctx.arc(cx,cy,R-42-i*20,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(255,255,255,${.012-i*.003})`;ctx.lineWidth=1;ctx.stroke();
+    });
+    for(let i=0;i<60;i++){
+      const ag=(i/60)*Math.PI*2,big=i%5===0;
+      const inner=R+(big?18:13),outer=R+24;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(ag)*inner,cy+Math.sin(ag)*inner);
+      ctx.lineTo(cx+Math.cos(ag)*outer,cy+Math.sin(ag)*outer);
+      ctx.strokeStyle=big?'rgba(255,255,255,.09)':'rgba(255,255,255,.035)';
+      ctx.lineWidth=big?1.4:.7;ctx.stroke();
+    }
+    document.getElementById('clockPct').innerHTML=Math.round(p*22)+'<span>%</span>';
+  }
+  draw(0);
+  let fired=false;
+  const io=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting&&!fired){
+      fired=true;
+      const t={p:0};
+      gsap.to(t,{p:1,duration:2.4,ease:'power3.out',onUpdate:()=>draw(t.p)});
+      io.disconnect();
+    }
+  },{threshold:.4});
+  io.observe(cv);
+}
+
+/* ─── MIRROR MOMENT ─── */
+/* Tracks actual behavior: time on page, scroll depth, clicks.
+   Confronts the user with what they actually did. */
+function setupMirror(){
+  const mirror=document.getElementById('mirror');
+  const msg=document.getElementById('mirror-msg');
+  const sub=document.getElementById('mirror-sub');
+  let startTime=Date.now();
+  let clicks=0;
+  let maxScroll=0;
+  let shown=false;
+  let phase=0;
+
+  document.addEventListener('click',()=>clicks++);
+  window.addEventListener('scroll',()=>{
+    const pct=Math.round((scrollY/(document.body.scrollHeight-innerHeight))*100);
+    if(pct>maxScroll)maxScroll=pct;
+  },{passive:true});
+
+  function fmt(ms){
+    const s=Math.floor(ms/1000);
+    return s<60?`${s}s`:`${Math.floor(s/60)}m ${s%60}s`;
+  }
+
+  const messages=[
+    // Phase 0: 30s — first contact
+    ()=>{
+      const elapsed=fmt(Date.now()-startTime);
+      msg.innerHTML=`You've been here for <em>${elapsed}</em>.`;
+      sub.textContent='Most people scan without reading. Which are you doing?';
+    },
+    // Phase 1: 90s — deeper
+    ()=>{
+      const elapsed=fmt(Date.now()-startTime);
+      msg.innerHTML=`${elapsed} here. ${clicks===0?'You haven\'t clicked anything.':clicks===1?'One click.':''+clicks+' clicks.'}`;
+      sub.textContent=clicks===0
+        ?"What's keeping you from acting?"
+        :"Notice the gap between reading and doing.";
+    },
+    // Phase 2: 3m — confrontation
+    ()=>{
+      msg.innerHTML=`You've scrolled <em>${maxScroll}%</em> of this page.`;
+      sub.textContent=maxScroll>80
+        ?"You read it all. What's still stopping you?"
+        :"Part of you doesn't want to see the rest.";
+    },
+    // Phase 3: 5m — final
+    ()=>{
+      const elapsed=fmt(Date.now()-startTime);
+      msg.innerHTML=`<em>${elapsed}</em> on this page.`;
+      sub.textContent='The thing you thought of during the loader — still there?';
+    }
   ];
-  const body = document.getElementById('terminal-body');
-  let idx = 0;
-  function addLine() {
-    if (idx >= lines.length) return;
-    const l = lines[idx];
-    const div = document.createElement('div');
-    div.className = 't-line';
-    if (l.type === 'prompt') {
-      div.innerHTML = `<span class="prompt">honestday@user:~$ </span><span class="cmd">${l.text}</span>`;
-    } else if (l.type === 'out') {
-      div.innerHTML = `<span class="out">${l.text}</span>`;
-    } else if (l.type === 'warn') {
-      div.innerHTML = `<span class="warn">${l.text}</span>`;
-    }
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
-    idx++;
-    setTimeout(addLine, 350);
-  }
-  addLine();
-  // blinking cursor
-  const cur = document.createElement('span');
-  cur.className = 't-cursor';
-  body.appendChild(cur);
+
+  const times=[30000,90000,180000,300000];
+  times.forEach((t,i)=>{
+    setTimeout(()=>{
+      messages[i]();
+      if(!shown){
+        shown=true;
+        mirror.classList.add('visible');
+      }
+      if(i>=2)mirror.classList.add('alert-pulse');
+      phase=i;
+    },t);
+  });
+
+  // Update the first message every 5s once shown
+  setInterval(()=>{
+    if(shown&&phase===0){messages[0]();}
+    if(shown&&phase===1){messages[1]();}
+  },5000);
 }
 
-// ── SCORE DATE ──
-document.getElementById('score-date').textContent = new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+/* ─── AI LIVE TYPEWRITER ─── */
+const AI_TEXT="You consistently avoid tasks that require external judgment or expose uncertainty. This isn't about difficulty — your completion rate on hard tasks with clear outcomes is actually high. The pattern is specific: tasks where success depends on someone else's reaction are systematically delayed. Your avoidance window opens after 10am. Your most important work should happen before then, before the day gives your brain time to construct reasons.";
 
-// ── SCORE BAR ANIMATION ──
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      document.getElementById('score-fill').style.width = '73%';
-      observer.unobserve(e.target);
+/* ─── IFRAME DETECTION ─── */
+(function(){
+  const iframe=document.getElementById('app-iframe');
+  const fallback=document.getElementById('iframe-fallback');
+  if(!iframe||!fallback)return;
+  fallback.style.display='none';
+  iframe.addEventListener('error',()=>{
+    iframe.style.display='none';
+    fallback.style.display='flex';
+  });
+  // Try to detect if localhost:8501 is unreachable
+  fetch('http://localhost:8501',{mode:'no-cors',cache:'no-store'})
+    .catch(()=>{
+      iframe.style.display='none';
+      fallback.style.display='flex';
+    });
+})();
+
+/* ─── NAV LINK: add app ─── */
+(function(){
+  const nl=document.querySelector('.nlinks');
+  if(!nl)return;
+  const a=document.createElement('a');
+  a.href='#app';a.textContent='Live App';
+  nl.insertBefore(a,nl.querySelector('.ncta'));
+})();
+
+
+let aiPlaying=false;
+let aiTween=null;
+
+function setupAI(){
+  const aiSection=document.getElementById('ai');
+  const io=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){
+      setTimeout(playAI,600);
+      io.disconnect();
     }
+  },{threshold:.3});
+  io.observe(aiSection);
+  document.getElementById('part-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('aidate') && (document.getElementById('aidate').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}));
+}
+
+function playAI(){
+  if(aiPlaying)return;
+  aiPlaying=true;
+  const el=document.getElementById('ai-typing');
+  const chips=document.getElementById('ai-chips');
+  const status=document.getElementById('ai-status-text');
+  chips.classList.remove('shown');
+  el.innerHTML='<span class="ai-cursor"></span>';
+  status.textContent='Analyzing behavioral data';
+  status.style.color='';
+
+  let i=0;
+  const speed=28; // ms per char
+  function type(){
+    if(i<AI_TEXT.length){
+      el.innerHTML=AI_TEXT.slice(0,i+1)+'<span class="ai-cursor"></span>';
+      i++;
+      setTimeout(type,speed+(Math.random()*14-7));
+    } else {
+      el.innerHTML=AI_TEXT;
+      status.textContent='Analysis complete';
+      status.style.color='var(--off)';
+      chips.classList.add('shown');
+      aiPlaying=false;
+    }
+  }
+  // Simulate "thinking" delay
+  setTimeout(()=>{
+    status.textContent='Reading 18 behavioral entries';
+    setTimeout(()=>{
+      status.textContent='Pattern identified';
+      setTimeout(type,700);
+    },900);
+  },400);
+}
+
+function replayAI(){
+  aiPlaying=false;
+  playAI();
+}
+
+/* ─── PARTICIPATION SECTION ─── */
+const triggerResponses={
+  fear:{
+    text:'<strong>Fear of judgment</strong> — the most common avoidance pattern. You\'re not avoiding the task. You\'re avoiding the moment when someone sees you try and decides what that means.',
+    chip:'Fear of Judgment'
+  },
+  overwhelm:{
+    text:'<strong>Cognitive overwhelm</strong> — the task feels bigger than it is. Your brain is refusing to start because it can\'t see the end. This is a planning failure, not a motivation failure.',
+    chip:'Task Overwhelm'
+  },
+  perfectionism:{
+    text:'<strong>Perfectionism as avoidance</strong> — "not perfect yet" is the most sophisticated form of procrastination. The email doesn\'t need to be perfect. It needs to be sent.',
+    chip:'Perfectionism'
+  },
+  unclear:{
+    text:'<strong>Ambiguity avoidance</strong> — your brain is waiting for clarity that will never arrive until you start. The act of writing creates the clarity. Not the other way around.',
+    chip:'Ambiguity'
+  }
+};
+const durationResponses={
+  days:{text:'<strong>Three days</strong> is a pattern, not an accident. Something specific is keeping you here. HonestDay identifies exactly what — and how often it happens.'},
+  week:{text:'<strong>A week.</strong> You\'ve had seven chances to send it. Each day you didn\'t was a choice. Seeing those choices as data — not failures — is how you change them.'},
+  weeks:{text:'<strong>Several weeks.</strong> This task has become a weight. Not because of what it requires — but because of what you\'ve made it mean. HonestDay separates the task from the story.'},
+  longer:{text:'<strong>Longer than you want to admit.</strong> This is the pattern HonestDay was built for. Not the rare avoidance — the systematic one. The one that costs you months.'}
+};
+
+let selectedTrigger=null;
+
+function pickChoice(btn,step,duration){
+  const choices=document.querySelectorAll(`#choices-${step} .task-choice`);
+  choices.forEach(c=>c.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  if(step===1){
+    selectedTrigger=btn.dataset.trigger;
+    const r=triggerResponses[selectedTrigger];
+    document.getElementById('reveal-text-1').innerHTML=r.text;
+    const rev=document.getElementById('reveal-1');
+    requestAnimationFrame(()=>rev.classList.add('shown'));
+    document.getElementById('part-chips').innerHTML=`<span class="pattern-chip">${r.chip} Detected</span>`;
+  } else {
+    const r=durationResponses[duration];
+    document.getElementById('reveal-text-2').innerHTML=r.text;
+    const rev=document.getElementById('reveal-2');
+    requestAnimationFrame(()=>rev.classList.add('shown'));
+  }
+}
+
+function nextStep(n){
+  document.getElementById('step-1').style.display='none';
+  const s2=document.getElementById('step-2');
+  s2.style.display='block';
+  s2.style.opacity='0';
+  s2.style.transform='translateY(10px)';
+  requestAnimationFrame(()=>{
+    s2.style.transition='opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1)';
+    s2.style.opacity='1';
+    s2.style.transform='translateY(0)';
+  });
+}
+
+/* ─── NAV ON SCROLL ─── */
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('nav');
+  const scrolled=scrollY>60;
+  nav.style.background=scrolled?'rgba(8,8,8,.9)':'transparent';
+  nav.style.backdropFilter=scrolled?'blur(24px)':'none';
+  nav.style.borderBottom=scrolled?'1px solid rgba(255,255,255,.055)':'none';
+},{passive:true});
+
+/* ─── MAGNETIC BUTTONS ─── */
+document.querySelectorAll('.btn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)*.18;
+    const dy=(e.clientY-r.top-r.height/2)*.18;
+    gsap.to(btn,{x:dx,y:dy,duration:.3,ease:'power2.out'});
+  });
+  btn.addEventListener('mouseleave',()=>{
+    gsap.to(btn,{x:0,y:0,duration:.55,ease:'elastic.out(1,.5)'});
   });
 });
-observer.observe(document.getElementById('score-fill'));
 
-// ── SCROLL REVEAL ──
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      revealObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 </script>
 </body>
 </html>
