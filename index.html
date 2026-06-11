@@ -400,7 +400,7 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
     <a href="#contra">The Problem</a>
     <a href="#participate">Participate</a>
     <a href="#score">Score</a>
-    <a href="http://localhost:8501" target="_blank" class="ncta">Open App →</a>
+    <a href="https://honestdayy.streamlit.app" target="_blank" class="ncta">Open App →</a>
   </div>
 </nav>
 
@@ -414,7 +414,7 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
   <div class="h-sub">
     <p class="h-desc">HonestDay is not a productivity app. It is a behavioral mirror — revealing the avoidance patterns, emotional triggers, and blind spots that keep you stuck.</p>
     <div class="h-btns">
-      <a href="http://localhost:8501" target="_blank" class="btn btn-red lg">Begin Your Day →</a>
+      <a href="https://honestdayy.streamlit.app" target="_blank" class="btn btn-red lg">Begin Your Day →</a>
       <a href="#contra" class="btn btn-ghost lg">See the evidence</a>
     </div>
   </div>
@@ -557,7 +557,7 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
             <div class="reveal-label">This Is The Pattern</div>
             <p class="reveal-text" id="reveal-text-2"></p>
             <div class="reveal-next" style="margin-top:1.2rem">
-              <a href="http://localhost:8501" target="_blank" class="btn btn-red" style="font-size:.72rem;padding:.75rem 1.5rem">Start tracking this →</a>
+              <a href="https://honestdayy.streamlit.app" target="_blank" class="btn btn-red" style="font-size:.72rem;padding:.75rem 1.5rem">Start tracking this →</a>
             </div>
           </div>
         </div>
@@ -578,7 +578,7 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
       <div class="eye">AI Analysis</div>
       <h2>Not motivation.<br><em>Confrontation.</em></h2>
       <p>The AI reads your behavioral data and tells you what is actually happening — not what you want to hear. It identifies the pattern you cannot see from inside it.</p>
-      <a href="http://localhost:8501" target="_blank" class="btn btn-red">Generate My Analysis →</a>
+      <a href="https://honestdayy.streamlit.app" target="_blank" class="btn btn-red">Generate My Analysis →</a>
     </div>
     <div class="ai-card rv" style="transition-delay:.18s">
       <div class="ai-hdr">
@@ -629,10 +629,10 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
         <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
         <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
         <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
-        <span style="font-size:.68rem;letter-spacing:.12em;color:var(--muted);margin:0 auto;text-transform:uppercase">honestday — live dashboard · localhost:8501</span>
+        <span style="font-size:.68rem;letter-spacing:.12em;color:var(--muted);margin:0 auto;text-transform:uppercase">honestday — live dashboard · honestdayy.streamlit.app</span>
       </div>
       <div style="position:relative;background:var(--ink)">
-        <iframe src="http://localhost:8501" width="100%" height="860px" frameborder="0" style="display:block;background:#080808" id="app-iframe"></iframe>
+        <iframe src="https://honestdayy.streamlit.app" width="100%" height="860px" frameborder="0" style="display:block;background:#080808" id="app-iframe"></iframe>
         <div id="iframe-fallback" style="display:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;background:var(--ink);border-top:1px solid var(--edge)">
           <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red)">App Not Running</div>
           <p style="font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--muted);text-align:center;max-width:400px">Start Streamlit first, then reload this page.</p>
@@ -651,7 +651,7 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
     <h2 class="cta-h rv">Start your first<br><em>honest day.</em></h2>
     <p class="cta-p rv">No sign-up. No install. Open the app, log your first task, and watch your patterns emerge.</p>
     <div class="cta-btns rv">
-      <a href="http://localhost:8501" target="_blank" class="btn btn-red lg">Open HonestDay →</a>
+      <a href="https://honestdayy.streamlit.app" target="_blank" class="btn btn-red lg">Open HonestDay →</a>
       <a href="#contra" class="btn btn-ghost lg">Read the evidence</a>
     </div>
   </div>
@@ -1041,8 +1041,8 @@ const AI_TEXT="You consistently avoid tasks that require external judgment or ex
     iframe.style.display='none';
     fallback.style.display='flex';
   });
-  // Try to detect if localhost:8501 is unreachable
-  fetch('http://localhost:8501',{mode:'no-cors',cache:'no-store'})
+  // Try to detect if Streamlit app is unreachable
+  fetch('https://honestdayy.streamlit.app',{mode:'no-cors',cache:'no-store'})
     .catch(()=>{
       iframe.style.display='none';
       fallback.style.display='flex';
