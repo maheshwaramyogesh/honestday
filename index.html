@@ -618,27 +618,49 @@ footer{padding:1.8rem var(--page);border-top:1px solid var(--edge);display:flex;
   </div>
 </section>
 
-<!-- SCENE 7: LIVE APP EMBED -->
-<section style="padding:7rem var(--page);border-top:1px solid var(--edge);background:var(--surface)" id="app">
+<!-- SCENE 7: LIVE APP -->
+<section style="padding:9rem var(--page);border-top:1px solid var(--edge);background:var(--surface)" id="app">
   <div style="max-width:1360px;margin:0 auto">
     <div class="eye rv">Live Application</div>
-    <h2 class="rv" style="font-family:var(--serif);font-size:clamp(2rem,5vw,4.5rem);font-weight:400;line-height:1;letter-spacing:-.025em;margin-bottom:.8rem;transition-delay:.1s">Try it <em style="font-style:italic;color:var(--red)">right now.</em></h2>
-    <p class="rv" style="font-size:.93rem;color:var(--muted);font-weight:300;margin-bottom:3rem;transition-delay:.15s">No signup. No install. Log your first task below and watch your patterns emerge.</p>
-    <div class="rv" style="transition-delay:.2s;border:1px solid var(--edge);border-radius:12px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 60px rgba(200,53,42,.06)">
-      <div style="background:var(--lift);padding:.9rem 1.4rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--edge)">
-        <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
-        <span style="font-size:.68rem;letter-spacing:.12em;color:var(--muted);margin:0 auto;text-transform:uppercase">honestday — live dashboard · honestdayy.streamlit.app</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;margin-top:3rem">
+
+      <!-- Left: text -->
+      <div class="rv">
+        <h2 style="font-family:var(--serif);font-size:clamp(2.2rem,5vw,5rem);font-weight:400;line-height:1;letter-spacing:-.025em;margin-bottom:1.5rem">Your patterns<br>are <em style="font-style:italic;color:var(--red)">already there.</em></h2>
+        <p style="font-size:.95rem;color:var(--muted);font-weight:300;line-height:1.9;margin-bottom:2.5rem;max-width:400px">Log your tasks for 7 days. The data reveals your avoidance patterns with statistical certainty — not as a feeling, but as verifiable behavioral evidence.</p>
+        <div style="display:flex;flex-direction:column;gap:.8rem;margin-bottom:3rem">
+          <div style="display:flex;align-items:center;gap:1rem;font-size:.85rem;color:var(--off)"><span style="color:var(--red);font-size:1rem">→</span> Log tasks in under 10 seconds</div>
+          <div style="display:flex;align-items:center;gap:1rem;font-size:.85rem;color:var(--off)"><span style="color:var(--red);font-size:1rem">→</span> See 3 live behavioral charts instantly</div>
+          <div style="display:flex;align-items:center;gap:1rem;font-size:.85rem;color:var(--off)"><span style="color:var(--red);font-size:1rem">→</span> Get AI insight from your real data</div>
+          <div style="display:flex;align-items:center;gap:1rem;font-size:.85rem;color:var(--off)"><span style="color:var(--red);font-size:1rem">→</span> No signup. No install. Just open and start.</div>
+        </div>
+        <a href="https://honestdayy.streamlit.app" target="_blank" class="btn btn-red lg" style="display:inline-flex">Open HonestDay →</a>
       </div>
-      <div style="position:relative;background:var(--ink)">
-        <iframe src="https://honestdayy.streamlit.app" width="100%" height="860px" frameborder="0" style="display:block;background:#080808" id="app-iframe"></iframe>
-        <div id="iframe-fallback" style="display:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;background:var(--ink);border-top:1px solid var(--edge)">
-          <div style="font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red)">App Not Running</div>
-          <p style="font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--muted);text-align:center;max-width:400px">Start Streamlit first, then reload this page.</p>
-          <code style="font-size:.8rem;background:var(--panel);border:1px solid var(--edge);padding:.8rem 1.5rem;border-radius:6px;color:var(--off)">python -m streamlit run app.py</code>
+
+      <!-- Right: feature cards -->
+      <div class="rv" style="transition-delay:.15s;display:flex;flex-direction:column;gap:1px;background:var(--edge);border:1px solid var(--edge);border-radius:12px;overflow:hidden">
+        <div style="background:var(--panel);padding:2rem 2.2rem;transition:background .3s" onmouseenter="this.style.background='var(--lift)'" onmouseleave="this.style.background='var(--panel)'">
+          <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem">Feature 01</div>
+          <div style="font-size:1rem;font-weight:500;margin-bottom:.4rem">Behavioral Task Logger</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.7">Log what you did, how hard it was, and — critically — why you avoided it if you did.</div>
+        </div>
+        <div style="background:var(--panel);padding:2rem 2.2rem;transition:background .3s" onmouseenter="this.style.background='var(--lift)'" onmouseleave="this.style.background='var(--panel)'">
+          <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem">Feature 02</div>
+          <div style="font-size:1rem;font-weight:500;margin-bottom:.4rem">Live Pattern Dashboard</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.7">Three Plotly charts reveal your avoidance triggers, difficulty patterns, and completion rates in real time.</div>
+        </div>
+        <div style="background:var(--panel);padding:2rem 2.2rem;transition:background .3s" onmouseenter="this.style.background='var(--lift)'" onmouseleave="this.style.background='var(--panel)'">
+          <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem">Feature 03</div>
+          <div style="font-size:1rem;font-weight:500;margin-bottom:.4rem">Honesty Score Engine</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.7">A points system that rewards truthful self-reporting over performance. Honesty earns more than pretending.</div>
+        </div>
+        <div style="background:var(--panel);padding:2rem 2.2rem;transition:background .3s" onmouseenter="this.style.background='var(--lift)'" onmouseleave="this.style.background='var(--panel)'">
+          <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem">Feature 04</div>
+          <div style="font-size:1rem;font-weight:500;margin-bottom:.4rem">Groq AI Insight</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.7">Llama-3.1 reads your behavioral data and generates a personalized 3-sentence confrontation — not motivation.</div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
