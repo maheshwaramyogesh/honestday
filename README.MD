@@ -2,72 +2,118 @@
 
 > *You don't have a time problem. You have an avoidance problem.*
 
-**HonestDay** is a personal procrastination tracker that reveals the real patterns behind your avoidance behavior — scored on honesty, analyzed by AI, visualized with data.
-
-🖥️ **Live Website:** [honestdayy.netlify.app](https://honestdayy.netlify.app)
+**HonestDay** is not a productivity app. It is a behavioral mirror — revealing the avoidance patterns, emotional triggers, and blind spots that keep you stuck. It tracks your tasks honestly, scores your self-awareness, and uses AI to confront you with what is actually happening.
 
 ---
 
-## 🎯 The Problem
+## 🔗 Live Links
 
-Most productivity apps give you to-do lists and timers. None of them ask the real question:
-
-**Why aren't you doing the work?**
-
-Procrastination isn't laziness. It's an avoidance pattern driven by:
-- Tasks that feel too overwhelming before you even start
-- Boredom — your brain craving dopamine the task doesn't offer
-- Fear of failure — overthinking kills more tasks than laziness ever did
+| | Link |
+|---|---|
+| 🖥️ **Landing Page** | [honestdayy.netlify.app](https://honestdayy.netlify.app) |
+| ⚡ **Live App** | [honestdayy.streamlit.app](https://honestdayy.streamlit.app) |
 
 ---
 
-## 💡 The Solution
+## 🎯 The Core Insight
 
-HonestDay makes your avoidance patterns **visible as data** — and rewards you for being truthful about them.
+Most tools measure output. HonestDay measures the **gap between intent and action** — the avoidance window, the emotional patterns, the blind spots that cost you weeks.
+
+Every task you didn't do was a choice. You chose something else — comfort, distraction, fear of being judged. HonestDay makes that choice **visible as data.**
+
+---
+
+## 🧩 The Problem — Why You Procrastinate
+
+| Trigger | What It Means |
+|---|---|
+| 🌊 **Overwhelm** | The task looks too big before you start. So you don't start. |
+| 😴 **Boredom** | Your brain craves dopamine. If the task doesn't offer it, your mind finds something that does. |
+| 😰 **Fear of Failure** | Overthinking kills more tasks than laziness ever did. |
+| 🎯 **Perfectionism** | "Not perfect yet" is the most sophisticated form of procrastination. |
+| ❓ **Ambiguity** | Your brain is waiting for clarity that will never arrive until you start. |
 
 ---
 
 ## ✨ Features
 
-### 📝 Behavioral Task Logger
-Log what you worked on, how difficult it was, and whether you completed, partially did, or avoided it. If avoided — you tell the system exactly why.
+### 🔁 Behavioral Loader
+Before entering the app, users are asked to think of something they've been putting off. This behavioral priming creates immediate personal relevance — the app confronts you before you even begin.
 
-### 📊 Live Pattern Dashboard
-Three real-time Plotly charts reveal:
-- **Task Outcomes** — completed vs partial vs avoided (pie chart)
-- **Avoidance Reasons** — what triggers your procrastination most (bar chart)
-- **Difficulty vs Completion** — do you avoid hard tasks more than easy ones? (histogram)
+### 📊 Avoidance Clock
+A canvas-drawn radial chart showing the breakdown of avoidance triggers across all logged sessions:
+- Fear of Failure — 28%
+- Overwhelm — 22%
+- Low Dopamine — 17%
+- Uncertainty — 11%
+- Completed Honestly — 22%
 
-### 🏆 Honesty Score Engine
+### 📜 Scroll Story
+A sticky 4-panel scroll narrative that takes the user through:
+1. **The Pattern** — You don't have a time problem
+2. **The Diagnosis** — You have an avoidance problem
+3. **The Evidence** — We can prove it with data
+4. **The Change** — Your first honest day starts now
+
+### 🪞 Mirror Moment
+A fixed behavioral observer widget in the bottom-right corner that watches the user's actual behavior on the page — time spent, scroll depth, clicks made — and confronts them with what they actually did vs what they intended to do. Escalates every 30 seconds.
+
+### 🧪 Live Behavioral Diagnosis
+An interactive participation section where users pick their avoidance trigger from a real scenario — and receive an immediate personalized behavioral diagnosis based on their selection.
+
+### 🤖 AI Live Typewriter Analysis
+A simulated live AI analysis card powered by **Groq / Llama-3.1** that reads behavioral data and types out a personalized confrontation in real time — not motivational advice, but a direct pattern identification.
+
+> *"You consistently avoid tasks that require external judgment or expose uncertainty. This isn't about difficulty — your completion rate on hard tasks with clear outcomes is actually high. The pattern is specific: tasks where success depends on someone else's reaction are systematically delayed."*
+
+### 🏆 Honesty Score System
 A points system that rewards truthful self-reporting over performance:
 
-| Action | Points |
-|--------|--------|
-| ✅ Task Completed | +10 |
-| 💪 Hard Task Bonus | +5 |
-| ⚡ Partial Completion | +4 |
-| 🤝 Avoided — But Honest | +2 |
+| Action | Points | Why |
+|---|---|---|
+| ✅ Task Completed | +10 | You did the work |
+| 💪 Hard Task Bonus | +5 | Difficult completions earn extra |
+| ⚡ Partial Completion | +4 | Starting matters more than nothing |
+| 🤝 Avoided — But Honest | +2 | Honesty earns more than pretending |
 
-> **The core insight:** Admitting avoidance earns more than pretending you completed something. Honesty is the metric.
+**The core philosophy:** A person who completes 5 tasks and honestly logs 3 avoidances scores higher than someone who completes 7 tasks but never admitted any struggle.
 
-### 🤖 Groq AI Insight
-Click "Generate My Insight" — the app sends your real behavioral data to Groq's Llama-3.1 inference engine and gets back a personalized 3-sentence confrontation about your specific avoidance pattern.
-
-**Not generic motivation. Your data. Your pattern. Your truth.**
+### 📈 Live Data Dashboard
+Three real-time Plotly charts built from your actual CSV data:
+- **Task Outcomes** — completed vs partial vs avoided
+- **Avoidance Reasons** — what triggers your procrastination most
+- **Difficulty vs Completion** — do you avoid hard tasks more?
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|------------|
-| Frontend + Backend | Python + Streamlit |
+|---|---|
+| App Framework | Python + Streamlit |
 | Data Processing | Pandas |
 | Data Visualization | Plotly |
 | AI Inference | Groq API / Llama-3.1-8b-instant |
-| Data Storage | CSV (local flat file) |
-| Landing Page | HTML + CSS + WebGL + GSAP |
+| Data Storage | CSV (flat file, auto-generated) |
+| Landing Page | HTML + CSS + WebGL (GLSL shaders) + GSAP + ScrollTrigger |
+| Fonts | Instrument Serif + Inter (Google Fonts) |
 | Deployment | Streamlit Cloud + Netlify |
+
+---
+
+## 🌐 Landing Page — Technical Details
+
+The landing page (`index.html`) is a single self-contained file with:
+
+- **WebGL Particle System** — 180 particles representing tasks. Red particles (avoided tasks) drift outward from center. Green particles (completed tasks) orbit inward toward accountability. Mouse cursor repels all particles — avoidance behavior visualized physically.
+- **GSAP + ScrollTrigger** — smooth scroll-based animations throughout every section
+- **Magnetic Buttons** — buttons physically follow the cursor using GSAP elastic easing
+- **Custom Dual Cursor** — red dot + lagging ring replaces the default cursor
+- **Mirror Moment Widget** — fixed behavioral observer tracking real user behavior on page
+- **Behavioral Loader** — GSAP timeline primes the user before entering the page
+- **Scroll Story** — 4-panel sticky scroll narrative with pinned animations
+- **AI Typewriter** — character-by-character typing effect with simulated thinking delay
+- **Responsive Design** — mobile breakpoints at 980px and 580px
 
 ---
 
@@ -75,12 +121,12 @@ Click "Generate My Insight" — the app sends your real behavioral data to Groq'
 
 ### Prerequisites
 - Python 3.8+
-- A free [Groq API key](https://console.groq.com)
+- Free [Groq API key](https://console.groq.com)
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone the repo
 git clone https://code.swecha.org/yogesh_0908/honestday.git
 cd honestday
 
@@ -91,8 +137,8 @@ python -m pip install streamlit pandas plotly groq
 python -m streamlit run app.py
 ```
 
-### Configuration
-In `app.py`, find this line and replace with your Groq API key:
+### Configure Your API Key
+In `app.py`, find and replace:
 ```python
 client = Groq(api_key="YOUR_GROQ_KEY_HERE")
 ```
@@ -104,70 +150,55 @@ client = Groq(api_key="YOUR_GROQ_KEY_HERE")
 ```
 honestday/
 │
-├── app.py                  # Main Streamlit application
-├── honestday_fixed.html    # Landing page (WebGL + GSAP)
-├── tasks.csv               # Auto-generated task data (created on first use)
+├── app.py                  # Streamlit application (main)
+├── index.html              # Landing page (WebGL + GSAP + CSS)
+├── tasks.csv               # Auto-generated on first task log
 └── README.md               # This file
 ```
 
 ---
 
-## 🧠 How The Score Works
-
-The score isn't about how many tasks you completed. It's about how honest you were.
+## 🧠 Score Formula
 
 ```
-Score = (completed × 10 + partial × 4 + avoided × 2 + hard_bonus × 5)
-        ─────────────────────────────────────────────────────────────────
-                          total_tasks × 10
+Score (%) = (completed × 10 + partial × 4 + avoided × 2 + hard_done × 5)
+            ──────────────────────────────────────────────────────────────
+                                total_tasks × 10
 ```
-
-A person who completed 5 tasks and honestly logged 3 avoidances scores **higher** than someone who completed 7 tasks but never admitted any struggle.
 
 ---
 
-## 🤖 AI Insight — How It Works
+## 🤖 How The AI Insight Works
 
-When you click "Generate My Insight", the app builds a plain English summary of your behavioral data:
+When "Generate My Insight" is clicked, the app builds a behavioral summary from your CSV data:
 
-```
-"The user logged 18 tasks, avoided 4.
-Top avoidance reason: Felt too overwhelming.
-Hard tasks avoided: 3.
+```python
+summary = f"""
+The user logged {total} tasks, avoided {avoided}.
+Top avoidance reason: {top_reason}.
+Hard tasks avoided: {hard_avoided}.
 Give a short, honest, direct 3-sentence insight about their
-procrastination pattern. No fluff."
+procrastination pattern. No fluff.
+"""
 ```
 
-This is sent to Groq's Llama-3.1 model which returns a personalized behavioral analysis — not motivational advice, but a direct confrontation of your specific pattern.
+This is sent to **Groq's Llama-3.1-8b-instant** model which returns a personalized analysis in under 2 seconds.
 
 ---
 
-## 🎨 Landing Page
+## 📊 Behavioral Data — What The Research Shows
 
-The landing page (`honestday_fixed.html`) features:
-- **WebGL particle system** — 180 particles representing tasks (red = avoided, green = completed) that react to your mouse
-- **Behavioral loader** — primes you to think of something you've been avoiding
-- **GSAP scroll animations** — smooth section reveals throughout
-- **Mirror Moment widget** — tracks your actual behavior on the page and confronts you with it
-- **Interactive participation quiz** — pick your avoidance trigger and get a personalized diagnosis
-- **AI typewriter effect** — simulates live behavioral analysis
-
----
-
-## 📊 Behavioral Insights From Real Data
-
-Based on typical usage patterns HonestDay reveals:
-
-- **68%** of avoidance driven by fear of failure or judgment
-- **54%** by cognitive overwhelm — task perceived as too large
-- **41%** by low dopamine — task feels unrewarding
-- Most avoidance happens **after 10am** — morning is your highest performance window
+Based on patterns tracked in HonestDay sessions:
+- **68%** of avoidance is driven by fear of failure or external judgment
+- **54%** by cognitive overwhelm — the task feels larger than it is
+- **41%** by low dopamine — the task feels unrewarding
+- Most avoidance windows **open after 10am** — your highest performance is in the morning
 
 ---
 
 ## 🏆 Built At
 
-**Hackathon 2026** — Built solo in under 8 hours.
+**Hackathon 2026** — Built solo in under 8 hours from zero to deployed.
 
 ---
 
@@ -179,7 +210,7 @@ Based on typical usage patterns HonestDay reveals:
 
 ## 📄 License
 
-MIT License — feel free to use, modify, and build on this.
+MIT — free to use, modify, and build on.
 
 ---
 
